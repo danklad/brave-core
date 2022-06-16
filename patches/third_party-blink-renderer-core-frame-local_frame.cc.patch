@@ -1,0 +1,64 @@
+diff --git a/third_party/blink/renderer/core/frame/local_frame.cc b/third_party/blink/renderer/core/frame/local_frame.cc
+index 019b87a77fb7306bacdcda20e388cdfb8d3a6be8..6ed2153991a90a288a56f5d8649d53dc739d7c91 100644
+--- a/third_party/blink/renderer/core/frame/local_frame.cc
++++ b/third_party/blink/renderer/core/frame/local_frame.cc
+@@ -223,6 +223,9 @@
+ #include "third_party/blink/renderer/core/frame/window_controls_overlay_changed_delegate.h"
+ #endif
+ 
++#include "third_party/blink/renderer/core/inspector/identifiers_factory.h"
++#include "brave/third_party/blink/renderer/core/brave_page_graph/page_graph.h"
++
+ namespace blink {
+ 
+ namespace {
+@@ -384,6 +387,7 @@ LocalFrame::~LocalFrame() {
+ 
+ void LocalFrame::Trace(Visitor* visitor) const {
+   visitor->Trace(ad_tracker_);
++  visitor->Trace(page_graph_);
+   visitor->Trace(attribution_src_loader_);
+   visitor->Trace(probe_sink_);
+   visitor->Trace(performance_monitor_);
+@@ -574,6 +578,8 @@ bool LocalFrame::DetachImpl(FrameDetachType type) {
+       box_shadow_paint_image_generator_->Shutdown();
+     if (clip_path_paint_image_generator_)
+       clip_path_paint_image_generator_->Shutdown();
++    if (page_graph_)
++      page_graph_->Shutdown();
+   }
+   idleness_detector_->Shutdown();
+   if (inspector_issue_reporter_)
+@@ -950,6 +956,17 @@ bool LocalFrame::BubbleLogicalScrollFromChildFrame(
+                                           owner_element);
+ }
+ 
++void LocalFrame::ExpectToSendFinalPageGraphOnUnload() {
++  UpdateSuddenTerminationStatus(true, mojom::blink::SuddenTerminationDisablerType::kUnloadHandler);
++}
++
++brave_page_graph::PageGraph* LocalFrame::GetPageGraph() const {
++  if (!page_graph_ || !page_graph_->IsActive()) {
++    return nullptr;
++  }
++  return page_graph_.Get();
++}
++
+ mojom::blink::SuddenTerminationDisablerType
+ SuddenTerminationDisablerTypeForEventType(const AtomicString& event_type) {
+   if (event_type == event_type_names::kUnload) {
+@@ -1520,6 +1537,14 @@ LocalFrame::LocalFrame(LocalFrameClient* client,
+   attribution_src_loader_ = MakeGarbageCollected<AttributionSrcLoader>(this);
+   inspector_task_runner_->InitIsolate(isolate);
+ 
++  if (IsLocalRoot()) {
++    if (base::FeatureList::IsEnabled(features::kBravePageGraph)) {
++      page_graph_ = MakeGarbageCollected<brave_page_graph::PageGraph>(this);
++    }
++  } else {
++    page_graph_ = LocalFrameRoot().page_graph_;
++  }
++
+   DCHECK(ad_tracker_ ? RuntimeEnabledFeatures::AdTaggingEnabled()
+                      : !RuntimeEnabledFeatures::AdTaggingEnabled());
+ 

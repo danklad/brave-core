@@ -1,0 +1,44 @@
+diff --git a/src/codegen/compiler.cc b/src/codegen/compiler.cc
+index 071cfa8e613d0345439434b682be981a7be778e5..02e0586f87d8014b3b9e61d9fcc5786cbdc786f1 100644
+--- a/src/codegen/compiler.cc
++++ b/src/codegen/compiler.cc
+@@ -2301,7 +2301,6 @@ MaybeHandle<JSFunction> Compiler::GetFunctionFromEval(
+     int eval_scope_position, int eval_position,
+     ParsingWhileDebugging parsing_while_debugging) {
+   Isolate* isolate = context->GetIsolate();
+-
+   // The cache lookup key needs to be aware of the separation between the
+   // parameters and the body to prevent this valid invocation:
+   //   Function("", "function anonymous(\n/**/) {\n}");
+@@ -2317,6 +2316,7 @@ MaybeHandle<JSFunction> Compiler::GetFunctionFromEval(
+     DCHECK_EQ(eval_scope_position, 0);
+     eval_scope_position = -parameters_end_pos;
+   }
++
+   CompilationCache* compilation_cache = isolate->compilation_cache();
+   InfoCellPair eval_result = compilation_cache->LookupEval(
+       source, outer_info, context, language_mode, eval_scope_position);
+@@ -2426,6 +2426,23 @@ MaybeHandle<JSFunction> Compiler::GetFunctionFromEval(
+   }
+   DCHECK(is_compiled_scope.is_compiled());
+ 
++  // #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  {
++    auto* page_graph_backend = isolate->GetPageGraphBackend();
++    if (V8_UNLIKELY(page_graph_backend)) {
++      Object maybe_script = result->shared().script();
++      if (maybe_script.IsScript()) {
++        const int parent_script_id =
++            isolate->GetExecutingScript(false).script_id;
++        Script script = Script::cast(maybe_script);
++        page_graph_backend->eval_script_compiled_cb(
++            reinterpret_cast<v8::Isolate*>(isolate), parent_script_id,
++            script.id(), v8::Utils::ToLocal(source));
++      }
++    }
++  }
++  // #endif
++
+   return result;
+ }
+ 

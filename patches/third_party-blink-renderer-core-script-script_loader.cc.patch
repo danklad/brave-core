@@ -1,0 +1,43 @@
+diff --git a/third_party/blink/renderer/core/script/script_loader.cc b/third_party/blink/renderer/core/script/script_loader.cc
+index 00d86fafc05a95c330f36a1be846ee5dc997d121..6958873260f1b3f9f92f081e23bdd2f1be8b5abd 100644
+--- a/third_party/blink/renderer/core/script/script_loader.cc
++++ b/third_party/blink/renderer/core/script/script_loader.cc
+@@ -82,6 +82,8 @@
+ #include "third_party/blink/renderer/platform/wtf/text/string_hash.h"
+ #include "third_party/blink/renderer/platform/wtf/text/string_view.h"
+ 
++#include "third_party/blink/renderer/core/probe/core_probes.h"
++
+ namespace blink {
+ 
+ ScriptLoader::ScriptLoader(ScriptElementBase* element,
+@@ -548,6 +550,9 @@ bool ScriptLoader::PrepareScript(const TextPosition& script_start_position,
+   ScriptFetchOptions options(nonce, integrity_metadata, integrity_attr,
+                              parser_state, credentials_mode, referrer_policy,
+                              fetch_priority_hint, render_blocking_behavior);
++  if (CoreProbeSink::HasAgentsGlobal(CoreProbeSink::kPageGraphAgent)) {
++    options.SetDOMNodeId(element_->GetDOMNodeId());
++  }
+ 
+   // <spec step="23">Let settings object be the element's node document's
+   // relevant settings object.</spec>
+@@ -732,6 +737,9 @@ bool ScriptLoader::PrepareScript(const TextPosition& script_start_position,
+       // depending on the conditions in Step 25 of "prepare a script".
+       break;
+     }
++    DCHECK(prepared_pending_script_);
++    probe::RegisterPageGraphElmForRemoteScript(element_->GetExecutionContext(),
++                                               element_->GetDOMNodeId(), url);
+   }
+ 
+   // <spec step="25">If the element does not have a src content attribute, run
+@@ -914,6 +922,9 @@ bool ScriptLoader::PrepareScript(const TextPosition& script_start_position,
+         break;
+       }
+     }
++    DCHECK(prepared_pending_script_);
++    probe::RegisterPageGraphElmForLocalScript(
++        element_->GetExecutionContext(), element_->GetDOMNodeId(), source_text);
+   }
+ 
+   DCHECK_NE(GetScriptType(), ScriptLoader::ScriptTypeAtPrepare::kImportMap);

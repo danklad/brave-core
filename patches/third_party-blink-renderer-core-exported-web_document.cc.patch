@@ -1,0 +1,41 @@
+diff --git a/third_party/blink/renderer/core/exported/web_document.cc b/third_party/blink/renderer/core/exported/web_document.cc
+index 68d79ce60e5f6261c05af0e0c76ba3145378cad0..7606b3eb78fcf51e04606563d1c5631daaba58e8 100644
+--- a/third_party/blink/renderer/core/exported/web_document.cc
++++ b/third_party/blink/renderer/core/exported/web_document.cc
+@@ -71,6 +71,7 @@
+ #include "third_party/blink/renderer/platform/weborigin/security_origin.h"
+ #include "third_party/blink/renderer/platform/wtf/casting.h"
+ 
++#include "brave/third_party/blink/renderer/core/brave_page_graph/page_graph.h"
+ namespace {
+ 
+ static const blink::WebStyleSheetKey GenerateStyleSheetKey() {
+@@ -333,6 +334,28 @@ WebElement WebDocument::GetElementByDevToolsNodeId(const int node_id) {
+   return WebElement(blink::To<Element>(node));
+ }
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++void WebDocument::RegisterResourceBlockAd(const GURL& url,
++                                          const std::string& rule) {
++  Document* doc = Unwrap<Document>();
++  ::brave_page_graph::PageGraph* const page_graph =
++      doc->GetFrame()->GetPageGraph();
++  if (page_graph) {
++    page_graph->RegisterResourceBlockAd(url, rule);
++  }
++}
++
++void WebDocument::RegisterResourceBlockTracker(const GURL& url,
++                                               const std::string& host) {
++  Document* doc = Unwrap<Document>();
++  ::brave_page_graph::PageGraph* const page_graph =
++      doc->GetFrame()->GetPageGraph();
++  if (page_graph) {
++    page_graph->RegisterResourceBlockTracker(url, host);
++  }
++}
++// #endif
++
+ WebDocument::WebDocument(Document* elem) : WebNode(elem) {}
+ 
+ DEFINE_WEB_NODE_TYPE_CASTS(WebDocument, ConstUnwrap<Node>()->IsDocumentNode())

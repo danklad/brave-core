@@ -1,0 +1,20 @@
+diff --git a/third_party/blink/renderer/core/dom/document.cc b/third_party/blink/renderer/core/dom/document.cc
+index 76d3ab52c3c5b391bc61a742ab4fbfff915de6bc..a90cc9b79709da066f49474f633422460e1421a7 100644
+--- a/third_party/blink/renderer/core/dom/document.cc
++++ b/third_party/blink/renderer/core/dom/document.cc
+@@ -3836,6 +3836,15 @@ void Document::DispatchUnloadEvents(UnloadEventTimingInfo* unload_timing_info) {
+   if (parser_)
+     parser_->StopParsing();
+ 
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  {
++    Page* const page = GetPage();
++    if (page) {
++      page->FinalPageGraph(this);
++    }
++  }
++// #endif
++
+   if (load_event_progress_ == kLoadEventNotRun ||
+       // TODO(dcheng): We should consider if we can make this conditional check
+       // stronger with a DCHECK() that this isn't called if the unload event is

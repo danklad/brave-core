@@ -1,0 +1,40 @@
+diff --git a/third_party/blink/renderer/core/inspector/inspector_page_agent.cc b/third_party/blink/renderer/core/inspector/inspector_page_agent.cc
+index 53b0a90f55f756acef689533e9e2015cbcb0d76c..5464a46a13e855373a6f0dbe1d46dd2935f9ecc9 100644
+--- a/third_party/blink/renderer/core/inspector/inspector_page_agent.cc
++++ b/third_party/blink/renderer/core/inspector/inspector_page_agent.cc
+@@ -97,6 +97,8 @@
+ #include "ui/display/screen_info.h"
+ #include "v8/include/v8-inspector.h"
+ 
++#include "third_party/blink/renderer/core/loader/resource/text_resource.h"
++#include "brave/third_party/blink/renderer/core/brave_page_graph/page_graph.h"
+ namespace blink {
+ 
+ using protocol::Response;
+@@ -1809,6 +1811,26 @@ Response InspectorPageAgent::setInterceptFileChooserDialog(bool enabled) {
+   return Response::Success();
+ }
+ 
++Response InspectorPageAgent::generatePageGraph(String* data) {
++// #if BUILDFLAG(BRAVE_PAGE_GRAPH_ENABLED)
++  LocalFrame* main_frame = inspected_frames_->Root();
++  if (!main_frame) {
++    return Response::ServerError("No main frame found");
++  }
++
++  ::brave_page_graph::PageGraph* const page_graph = main_frame->GetPageGraph();
++  if (!page_graph) {
++    return Response::ServerError("No Page Graph for main frame");
++  }
++
++  std::string graphml(page_graph->ToGraphML());
++  *data = String::FromUTF8(graphml.c_str());
++  return Response::Success();
++// #else
++//   return Response::ServerError("Browser not built with Page Graph support");
++// #endif
++}
++
+ Response InspectorPageAgent::generateTestReport(const String& message,
+                                                 Maybe<String> group) {
+   LocalDOMWindow* window = inspected_frames_->Root()->DomWindow();

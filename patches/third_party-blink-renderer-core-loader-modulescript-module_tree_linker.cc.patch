@@ -1,0 +1,32 @@
+diff --git a/third_party/blink/renderer/core/loader/modulescript/module_tree_linker.cc b/third_party/blink/renderer/core/loader/modulescript/module_tree_linker.cc
+index c04edd826d9d54be11b96e0afd93033bfa6a5830..9a41a4fed3a0e5a1be9d76608cb06cdec6895db8 100644
+--- a/third_party/blink/renderer/core/loader/modulescript/module_tree_linker.cc
++++ b/third_party/blink/renderer/core/loader/modulescript/module_tree_linker.cc
+@@ -21,6 +21,8 @@
+ #include "third_party/blink/renderer/platform/wtf/vector.h"
+ #include "v8/include/v8.h"
+ 
++#include "third_party/blink/renderer/core/probe/core_probes.h"
++
+ // <specdef label="IMSGF"
+ // href="https://html.spec.whatwg.org/C/#internal-module-script-graph-fetching-procedure">
+ 
+@@ -435,6 +437,18 @@ void ModuleTreeLinker::FetchDescendants(const ModuleScript* module_script) {
+                              module_script->FetchOptions().GetReferrerPolicy(),
+                              mojom::blink::FetchPriorityHint::kAuto,
+                              RenderBlockingBehavior::kNonBlocking);
++  if (CoreProbeSink::HasAgentsGlobal(CoreProbeSink::kPageGraphAgent)) {
++    options.SetDOMNodeId(module_script->FetchOptions().GetDOMNodeId());
++    if (record->IsSourceTextModule()) {
++      options.SetParentScriptId(record->ScriptId());
++      ExecutionContext* execution_context =
++          ExecutionContext::From(script_state);
++      for (const auto& module_request : module_requests) {
++        probe::RegisterPageGraphModuleScriptForDescendant(
++            execution_context, options.GetParentScriptId(), module_request.url);
++      }
++    }
++  }
+ 
+   // <spec step="8">For each moduleRequest in moduleRequests, ...</spec>
+   //

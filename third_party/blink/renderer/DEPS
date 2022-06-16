@@ -1,3 +1,4 @@
 include_rules = [
-  "+third_party/blink/renderer/platform/wtf/text",
+    "+third_party/blink/public/platform",
+    "+third_party/blink/renderer/platform",
 ]
