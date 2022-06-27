@@ -78,6 +78,12 @@ void DetectChromeProfiles(std::vector<importer::SourceProfile>* profiles) {
       GetChromeSourceProfiles(GetVivaldiUserDataFolder().Append(
           base::FilePath::StringType(FILE_PATH_LITERAL("Local State")))),
       GetVivaldiUserDataFolder(), "Vivaldi ", importer::TYPE_VIVALDI);
+
+  AddChromeToProfiles(
+      profiles,
+      GetChromeSourceProfiles(GetOperaUserDataFolder().Append(
+          base::FilePath::StringType(FILE_PATH_LITERAL("Local State")))),
+      GetOperaUserDataFolder(), "Opera ", importer::TYPE_OPERA);
 }
 
 }  // namespace
