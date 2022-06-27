@@ -101,6 +101,7 @@ provideStrings({
   braveWalletButtonVerify: 'Verify',
   braveWalletButtonClose: 'Close',
   braveWalletButtonMore: 'More',
+  braveWalletButtonDone: 'Done',
 
   // Wallet Onboarding Welcome
   braveWalletWelcomeTitle: 'Welcome to the new Brave Wallet',
@@ -622,7 +623,6 @@ provideStrings({
   braveWalletTransactionCompleteSwapHeaderTitle: 'Swapped $1 to $2',
   braveWalletTransactionCompleteTitle: 'Transaction complete!',
   braveWalletTransactionCompleteSwapDescription: '$1 has been successfully deposited into your wallet.',
-  braveWalletTransactionCompleteNextCTA: 'Done',
   braveWalletTransactionCompleteReceiptCTA: 'Receipt',
 
   // Confirming
