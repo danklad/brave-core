@@ -103,7 +103,7 @@ bool IsNetworkAvailable() {
   return net::NetworkChangeNotifier::GetConnectionType() !=
          net::NetworkChangeNotifier::CONNECTION_NONE;
 }
-#endif
+#endif  // !BUILDFLAG(IS_ANDROID)
 }  // namespace
 
 namespace brave_vpn {
@@ -141,7 +141,7 @@ BraveVpnService::BraveVpnService(
     ReloadPurchasedState();
   }
   base::PowerMonitor::AddPowerSuspendObserver(this);
-#endif
+#endif  // !BUILDFLAG(IS_ANDROID)
 }
 
 BraveVpnService::~BraveVpnService() {
@@ -878,16 +878,18 @@ void BraveVpnService::OnResume() {}
 #endif  // !BUILDFLAG(IS_ANDROID)
 
 #if BUILDFLAG(IS_ANDROID)
-
 void BraveVpnService::GetPurchaseToken(GetPurchaseTokenCallback callback) {
-  // TODO(bsclifton): get the real purchase token
+  // TODO(bsclifton): read purchase token from prefs
+  // for example:
+  //
+  // auto* preference =
+  //     prefs_->FindPreference(prefs::kBraveVPNPurchaseTokenAndroid);
 
   std::move(callback).Run(
       "oohdhbmbebmciddpbcicgnko.AO-J1OxJGS6-"
       "tNYvzofx7RO2hJSEgQmi6tOrLHEB4zJ2OhsyhX3mhEe4QKS0MVxtJCBNIAlBP5jAgDPqdXDN"
       "z15JhIXt5QYcIExIxe5H5ifbhAsHILlUXlE");
 }
-
 #endif
 
 void BraveVpnService::AddObserver(
