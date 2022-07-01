@@ -994,11 +994,9 @@ TEST_F(EthereumProviderImplUnitTest, AddAndApproveTransaction) {
       "\"gas\":\"0x0974\",\"to\":"
       "\"0xbe862ad9abfe6f22bcb087716c7d89a26051f74c\","
       "\"value\":\"0x016345785d8a0000\"}]}";
-  base::JSONReader::ValueWithError value_with_error =
-      base::JSONReader::ReadAndReturnValueWithError(
-          normalized_json_request, base::JSON_PARSE_CHROMIUM_EXTENSIONS |
-                                       base::JSONParserOptions::JSON_PARSE_RFC);
-  absl::optional<base::Value>& response = value_with_error.value;
+  absl::optional<base::Value> response = base::JSONReader::Read(
+      normalized_json_request, base::JSON_PARSE_CHROMIUM_EXTENSIONS |
+                                   base::JSONParserOptions::JSON_PARSE_RFC);
   provider()->Request(
       response->Clone(),
       base::BindLambdaForTesting(
@@ -1065,11 +1063,9 @@ TEST_F(EthereumProviderImplUnitTest, AddAndApproveTransactionError) {
       "\",\"gasPrice\":\"0x09184e72a000\","
       "\"gas\":\"0x0974\",\"to\":\"0xbe8\","
       "\"value\":\"0x016345785d8a0000\"}]}";
-  base::JSONReader::ValueWithError value_with_error =
-      base::JSONReader::ReadAndReturnValueWithError(
-          normalized_json_request, base::JSON_PARSE_CHROMIUM_EXTENSIONS |
-                                       base::JSONParserOptions::JSON_PARSE_RFC);
-  absl::optional<base::Value>& response = value_with_error.value;
+  absl::optional<base::Value> response = base::JSONReader::Read(
+      normalized_json_request, base::JSON_PARSE_CHROMIUM_EXTENSIONS |
+                                   base::JSONParserOptions::JSON_PARSE_RFC);
   provider()->Request(
       response->Clone(),
       base::BindLambdaForTesting(
@@ -1104,11 +1100,9 @@ TEST_F(EthereumProviderImplUnitTest, AddAndApproveTransactionNoPermission) {
       "\"gas\":\"0x0974\",\"to\":"
       "\"0xbe862ad9abfe6f22bcb087716c7d89a26051f74c\","
       "\"value\":\"0x016345785d8a0000\"}]}";
-  base::JSONReader::ValueWithError value_with_error =
-      base::JSONReader::ReadAndReturnValueWithError(
-          normalized_json_request, base::JSON_PARSE_CHROMIUM_EXTENSIONS |
-                                       base::JSONParserOptions::JSON_PARSE_RFC);
-  absl::optional<base::Value>& response = value_with_error.value;
+  absl::optional<base::Value> response = base::JSONReader::Read(
+      normalized_json_request, base::JSON_PARSE_CHROMIUM_EXTENSIONS |
+                                   base::JSONParserOptions::JSON_PARSE_RFC);
   provider()->Request(
       response->Clone(),
       base::BindLambdaForTesting(
@@ -1147,11 +1141,9 @@ TEST_F(EthereumProviderImplUnitTest, AddAndApprove1559Transaction) {
       "\",\"maxFeePerGas\":\"0x1\",\"maxPriorityFeePerGas\":\"0x1\","
       "\"gas\":\"0x1\",\"to\":\"0xbe862ad9abfe6f22bcb087716c7d89a26051f74c\","
       "\"value\":\"0x00\"}]}";
-  base::JSONReader::ValueWithError value_with_error =
-      base::JSONReader::ReadAndReturnValueWithError(
-          normalized_json_request, base::JSON_PARSE_CHROMIUM_EXTENSIONS |
-                                       base::JSONParserOptions::JSON_PARSE_RFC);
-  absl::optional<base::Value>& response = value_with_error.value;
+  absl::optional<base::Value> response = base::JSONReader::Read(
+      normalized_json_request, base::JSON_PARSE_CHROMIUM_EXTENSIONS |
+                                   base::JSONParserOptions::JSON_PARSE_RFC);
   provider()->Request(
       response->Clone(),
       base::BindLambdaForTesting(
@@ -1215,11 +1207,9 @@ TEST_F(EthereumProviderImplUnitTest, AddAndApprove1559TransactionNoChainId) {
       "\",\"maxFeePerGas\":\"0x1\",\"maxPriorityFeePerGas\":\"0x1\","
       "\"gas\":\"0x1\",\"to\":\"0xbe862ad9abfe6f22bcb087716c7d89a26051f74c\","
       "\"value\":\"0x00\"}]}";
-  base::JSONReader::ValueWithError value_with_error =
-      base::JSONReader::ReadAndReturnValueWithError(
-          normalized_json_request, base::JSON_PARSE_CHROMIUM_EXTENSIONS |
-                                       base::JSONParserOptions::JSON_PARSE_RFC);
-  absl::optional<base::Value>& response = value_with_error.value;
+  absl::optional<base::Value> response = base::JSONReader::Read(
+      normalized_json_request, base::JSON_PARSE_CHROMIUM_EXTENSIONS |
+                                   base::JSONParserOptions::JSON_PARSE_RFC);
   provider()->Request(
       response->Clone(),
       base::BindLambdaForTesting(
@@ -1283,11 +1273,9 @@ TEST_F(EthereumProviderImplUnitTest, AddAndApprove1559TransactionError) {
       "\"gasPrice\":\"0x01\", "
       "\"gas\":\"0x00\",\"to\":\"0xbe862ad9abfe6f22bcb087716c7d89a26051f74c\","
       "\"value\":\"0x00\"}]}";
-  base::JSONReader::ValueWithError value_with_error =
-      base::JSONReader::ReadAndReturnValueWithError(
-          normalized_json_request, base::JSON_PARSE_CHROMIUM_EXTENSIONS |
-                                       base::JSONParserOptions::JSON_PARSE_RFC);
-  absl::optional<base::Value>& response = value_with_error.value;
+  absl::optional<base::Value> response = base::JSONReader::Read(
+      normalized_json_request, base::JSON_PARSE_CHROMIUM_EXTENSIONS |
+                                   base::JSONParserOptions::JSON_PARSE_RFC);
   provider()->Request(
       response->Clone(),
       base::BindLambdaForTesting(
@@ -1321,11 +1309,9 @@ TEST_F(EthereumProviderImplUnitTest, AddAndApprove1559TransactionNoPermission) {
       "\",\"maxFeePerGas\":\"0x0\",\"maxPriorityFeePerGas\":\"0x0\","
       "\"gas\":\"0x00\",\"to\":\"0xbe862ad9abfe6f22bcb087716c7d89a26051f74c\","
       "\"value\":\"0x00\"}]}";
-  base::JSONReader::ValueWithError value_with_error =
-      base::JSONReader::ReadAndReturnValueWithError(
-          normalized_json_request, base::JSON_PARSE_CHROMIUM_EXTENSIONS |
-                                       base::JSONParserOptions::JSON_PARSE_RFC);
-  absl::optional<base::Value>& response = value_with_error.value;
+  absl::optional<base::Value> response = base::JSONReader::Read(
+      normalized_json_request, base::JSON_PARSE_CHROMIUM_EXTENSIONS |
+                                   base::JSONParserOptions::JSON_PARSE_RFC);
   provider()->Request(
       response->Clone(),
       base::BindLambdaForTesting(
