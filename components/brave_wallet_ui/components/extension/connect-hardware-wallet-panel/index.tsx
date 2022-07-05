@@ -1,5 +1,24 @@
+// Copyright (c) 2022 The Brave Authors. All rights reserved.
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this file,
+// you can obtain one at http://mozilla.org/MPL/2.0/.
+
 import * as React from 'react'
 
+// utils
+import { getLocale } from '../../../../common/locale'
+
+// types
+import { BraveWallet } from '../../../constants/types'
+import { HardwareWalletResponseCodeType } from '../../../common/hardware/types'
+
+// hooks
+import useInterval from '../../../common/hooks/interval'
+
+// components
+import { NavButton } from '../buttons/nav-button/index'
+
+// style
 import {
   StyledWrapper,
   Title,
@@ -10,11 +29,6 @@ import {
   Indicator,
   ConnectionRow
 } from './style'
-import { NavButton } from '..'
-import { getLocale } from '../../../../common/locale'
-import useInterval from '../../../common/hooks/interval'
-import { BraveWallet } from '../../../constants/types'
-import { HardwareWalletResponseCodeType } from '../../../common/hardware/types'
 
 export interface Props {
   onCancel: (accountAddress: string, coinType: BraveWallet.CoinType) => void
@@ -26,17 +40,16 @@ export interface Props {
   onClickInstructions: () => void
 }
 
-function ConnectHardwareWalletPanel (props: Props) {
-  const {
-    onCancel,
-    walletName,
-    accountAddress,
-    coinType,
-    hardwareWalletCode,
-    retryCallable,
-    onClickInstructions
-  } = props
-
+export const ConnectHardwareWalletPanel = ({
+  onCancel,
+  walletName,
+  accountAddress,
+  coinType,
+  hardwareWalletCode,
+  retryCallable,
+  onClickInstructions
+}: Props) => {
+  // memos
   const isConnected = React.useMemo((): boolean => {
     return hardwareWalletCode !== 'deviceNotConnected'
   }, [hardwareWalletCode])
@@ -56,12 +69,15 @@ function ConnectHardwareWalletPanel (props: Props) {
     return getLocale('braveWalletConnectHardwarePanelConnect').replace('$1', walletName)
   }, [hardwareWalletCode])
 
-  const onCancelConnect = () => {
-    onCancel(accountAddress, coinType)
-  }
-
+  // custom hooks
   useInterval(retryCallable, 3000, !isConnected ? 5000 : null)
 
+  // methods
+  const onCancelConnect = React.useCallback(() => {
+    onCancel(accountAddress, coinType)
+  }, [onCancel, accountAddress, coinType])
+
+  // render
   return (
     <StyledWrapper>
       <ConnectionRow>
@@ -81,7 +97,7 @@ function ConnectHardwareWalletPanel (props: Props) {
       {
         hardwareWalletCode !== 'deviceBusy' && (
           <ButtonWrapper>
-            <NavButton buttonType='secondary' text={getLocale('braveWalletBackupButtonCancel')} onSubmit={onCancelConnect} />
+            <NavButton buttonType='secondary' text={getLocale('braveWalletButtonCancel')} onSubmit={onCancelConnect} />
           </ButtonWrapper>
         )
       }
