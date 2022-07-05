@@ -68,7 +68,7 @@ export interface Props {
   account: WalletAccountType
 }
 
-export const AddAccountModal = (props: Props) => {
+export const AccountSettingsModal = (props: Props) => {
   const {
     title,
     account,
@@ -243,4 +243,4 @@ export const AddAccountModal = (props: Props) => {
   )
 }
 
-export default AddAccountModal
+export default AccountSettingsModal

@@ -48,17 +48,16 @@ interface Props {
 
 const AssetIconWithPlaceholder = withPlaceholderIcon(AssetIcon, { size: 'big', marginLeft: 0, marginRight: 8 })
 
-const PortfolioAssetItem = (props: Props) => {
-  const {
-    spotPrices,
-    assetBalance,
-    action,
-    token,
-    defaultCurrencies,
-    hideBalances,
-    isPanel,
-    networks
-  } = props
+export const PortfolioAssetItem = ({
+  spotPrices,
+  assetBalance,
+  action,
+  token,
+  defaultCurrencies,
+  hideBalances,
+  isPanel,
+  networks
+}: Props) => {
   const [assetNameSkeletonWidth, setAssetNameSkeletonWidth] = React.useState(0)
   const [assetNetworkSkeletonWidth, setAssetNetworkSkeletonWidth] = React.useState(0)
 
