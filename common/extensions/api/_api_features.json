@@ -74,6 +74,7 @@
       "chrome://wallet-panel.top-chrome/*",
       "chrome://wallet/*",
       "chrome://brave-shields.top-chrome/*",
+      "chrome://cookie-consent-blocker.top-chrome/*",
       "chrome://rewards-panel.top-chrome/*"
     ]
   }, {

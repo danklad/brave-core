@@ -192,4 +192,9 @@
     "META": {"sizes": {"includes": [20]}},
     "includes": [59000]
   },
+  # This file is generated during the build.
+  "<(SHARED_INTERMEDIATE_DIR)/brave/web-ui-cookie_consent_blocker/cookie_consent_blocker.grd": {
+    "META": {"sizes": {"includes": [80]}},
+    "includes": [59020]
+  },
 }

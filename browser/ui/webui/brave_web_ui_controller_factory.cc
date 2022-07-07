@@ -33,6 +33,7 @@
 #if !BUILDFLAG(IS_ANDROID)
 #include "brave/browser/ui/webui/brave_rewards/rewards_panel_ui.h"
 #include "brave/browser/ui/webui/brave_settings_ui.h"
+#include "brave/browser/ui/webui/brave_shields/cookie_consent_blocker_ui.h"
 #include "brave/browser/ui/webui/brave_shields/shields_panel_ui.h"
 #include "brave/browser/ui/webui/brave_wallet/wallet_page_ui.h"
 #include "brave/browser/ui/webui/brave_wallet/wallet_panel_ui.h"
@@ -124,6 +125,8 @@ WebUIController* NewWebUI(WebUI* web_ui, const GURL& url) {
     return new BraveNewTabUI(web_ui, url.host());
   } else if (host == kShieldsPanelHost) {
     return new ShieldsPanelUI(web_ui);
+  } else if (host == kCookieConsentBlockerHost) {
+    return new CookieConsentBlockerUI(web_ui);
 #endif  // !BUILDFLAG(IS_ANDROID)
 #if BUILDFLAG(ENABLE_TOR)
   } else if (host == kTorInternalsHost) {
@@ -160,6 +163,7 @@ WebUIFactoryFunction GetWebUIFactoryFunction(WebUI* web_ui, const GURL& url) {
       url.host_piece() == kWalletPageHost ||
 #endif
       url.host_piece() == kShieldsPanelHost ||
+      url.host_piece() == kCookieConsentBlockerHost ||
       url.host_piece() == kRewardsPageHost ||
       url.host_piece() == kFederatedInternalsHost ||
       url.host_piece() == kRewardsInternalsHost ||

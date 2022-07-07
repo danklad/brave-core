@@ -14,6 +14,7 @@
 #include "brave/browser/ui/brave_browser.h"
 #include "brave/browser/ui/views/brave_actions/brave_actions_container.h"
 #include "brave/browser/ui/views/brave_actions/brave_shields_action_view.h"
+#include "brave/browser/ui/views/brave_shields/cookie_consent_browser_helper.h"
 #include "brave/browser/ui/views/location_bar/brave_location_bar_view.h"
 #include "brave/browser/ui/views/toolbar/bookmark_button.h"
 #include "brave/browser/ui/views/toolbar/brave_toolbar_view.h"
@@ -160,6 +161,9 @@ BraveBrowserView::BraveBrowserView(std::unique_ptr<Browser> browser)
     brave_rewards::RewardsPanelCoordinator::CreateForBrowser(browser_.get(),
                                                              rewards_service);
   }
+
+  brave_shields::CookieConsentBrowserHelper::CreateForBrowserIfNecessary(
+      browser_.get());
 
 #if BUILDFLAG(ENABLE_BRAVE_VPN)
   pref_change_registrar_.Add(

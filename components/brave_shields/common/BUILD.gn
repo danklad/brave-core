@@ -30,6 +30,7 @@ mojom("mojom") {
   sources = [
     "brave_shields.mojom",
     "brave_shields_panel.mojom",
+    "cookie_consent_blocker.mojom",
   ]
 
   public_deps = [
