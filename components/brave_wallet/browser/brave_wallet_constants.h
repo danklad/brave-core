@@ -6,6 +6,7 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_WALLET_BROWSER_BRAVE_WALLET_CONSTANTS_H_
 #define BRAVE_COMPONENTS_BRAVE_WALLET_BROWSER_BRAVE_WALLET_CONSTANTS_H_
 
+#include <string>
 #include <vector>
 
 #include "base/no_destructor.h"
@@ -684,7 +685,14 @@ constexpr char kSolanaFeeRecipient[] =
 
 constexpr int64_t kBlockTrackerDefaultTimeInSeconds = 20;
 
-constexpr char kPolygonMainnetEndpoint[] = "https://mainnet-polygon.brave.com/";
+const base::flat_map<std::string, std::string> kInfuraChainEndpoints = {
+    {brave_wallet::mojom::kPolygonMainnetChainId,
+     "https://mainnet-polygon.brave.com/"},
+    {brave_wallet::mojom::kOptimismMainnetChainId,
+     "https://mainnet-optimism.brave.com/"},
+    {brave_wallet::mojom::kAuroraMainnetChainId,
+     "https://mainnet-aurora.brave.com/"},
+};
 
 // Unstoppable domains record key for ethereum address.
 constexpr char kCryptoEthAddressKey[] = "crypto.ETH.address";
