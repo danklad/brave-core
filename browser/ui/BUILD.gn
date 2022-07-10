@@ -343,6 +343,7 @@ source_set("ui") {
   if (toolkit_views) {
     deps += [
       "//brave/browser/ui/views/brave_ads",
+      "//brave/browser/ui/views/brave_news",
       "//brave/browser/ui/views/brave_tooltips",
     ]
   }
