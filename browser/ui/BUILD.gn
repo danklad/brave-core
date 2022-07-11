@@ -176,6 +176,8 @@ source_set("ui") {
       "views/brave_first_run_dialog.h",
       "views/brave_layout_provider.cc",
       "views/brave_layout_provider.h",
+      "views/brave_news/brave_news_bubble_view.cc",
+      "views/brave_news/brave_news_bubble_view.h",
       "views/crash_report_permission_ask_dialog_view.cc",
       "views/crash_report_permission_ask_dialog_view.h",
       "views/download/brave_download_item_view.cc",
@@ -343,7 +345,6 @@ source_set("ui") {
   if (toolkit_views) {
     deps += [
       "//brave/browser/ui/views/brave_ads",
-      "//brave/browser/ui/views/brave_news",
       "//brave/browser/ui/views/brave_tooltips",
     ]
   }
