@@ -22,15 +22,6 @@ public class BraveSingleCategorySettings
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.close_menu_id) {
-            getSiteSettingsDelegate().closeButton();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     public String getAddExceptionDialogMessage() {
         BrowserContextHandle browserContextHandle =
                 getSiteSettingsDelegate().getBrowserContextHandle();

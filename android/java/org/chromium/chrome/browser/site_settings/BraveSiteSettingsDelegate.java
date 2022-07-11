@@ -22,14 +22,6 @@ public class BraveSiteSettingsDelegate extends ChromeSiteSettingsDelegate {
     }
 
     @Override
-    public void closeButton() {
-        Intent intent =
-                new Intent(BraveActivity.getChromeTabbedActivity(), ChromeTabbedActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        BraveActivity.getChromeTabbedActivity().startActivity(intent);
-    }
-
-    @Override
     public void getFaviconImageForURL(GURL faviconUrl, Callback<Drawable> callback) {
         if (!faviconUrl.isValid()) {
             callback.onResult(null);
