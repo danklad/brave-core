@@ -27,6 +27,7 @@
 #include "brave/ios/browser/api/brave_wallet/brave_wallet_provider_delegate_ios.h"
 #include "brave/ios/browser/api/history/brave_history_api+private.h"
 #include "brave/ios/browser/api/opentabs/brave_opentabs_api+private.h"
+#include "brave/ios/browser/api/opentabs/brave_sendtab_api+private.h"
 #include "brave/ios/browser/api/password/brave_password_api+private.h"
 #include "brave/ios/browser/api/sync/brave_sync_api+private.h"
 #include "brave/ios/browser/api/sync/driver/brave_sync_profile_service+private.h"
@@ -41,6 +42,7 @@
 #include "components/history/core/browser/history_service.h"
 #include "components/keyed_service/core/service_access_type.h"
 #include "components/password_manager/core/browser/password_store.h"
+#include "components/send_tab_to_self/send_tab_to_self_sync_service.h"
 #include "components/sync/base/command_line_switches.h"
 #include "ios/chrome/app/startup/provider_registration.h"
 #include "ios/chrome/app/startup_tasks.h"
@@ -48,10 +50,12 @@
 #include "ios/chrome/browser/bookmarks/bookmark_model_factory.h"
 #include "ios/chrome/browser/browser_state/chrome_browser_state.h"
 #include "ios/chrome/browser/browser_state/chrome_browser_state_manager.h"
+
 #include "ios/chrome/browser/content_settings/host_content_settings_map_factory.h"
 #include "ios/chrome/browser/history/history_service_factory.h"
 #include "ios/chrome/browser/history/web_history_service_factory.h"
 #include "ios/chrome/browser/passwords/ios_chrome_password_store_factory.h"
+#include "ios/chrome/browser/sync/send_tab_to_self_sync_service_factory.h"
 #include "ios/chrome/browser/sync/session_sync_service_factory.h"
 #include "ios/chrome/browser/sync/sync_service_factory.h"
 #include "ios/chrome/browser/ui/webui/chrome_web_ui_ios_controller_factory.h"
@@ -85,6 +89,7 @@ const BraveCoreSwitch BraveCoreSwitchSyncURL =
 @property(nonatomic) BraveHistoryAPI* historyAPI;
 @property(nonatomic) BravePasswordAPI* passwordAPI;
 @property(nonatomic) BraveOpenTabsAPI* openTabsAPI;
+@property(nonatomic) BraveSendTabAPI* sendTabAPI;
 @property(nonatomic) BraveSyncAPI* syncAPI;
 @property(nonatomic) BraveSyncProfileServiceIOS* syncProfileService;
 @end
@@ -199,6 +204,7 @@ const BraveCoreSwitch BraveCoreSwitchSyncURL =
   _historyAPI = nil;
   _openTabsAPI = nil;
   _passwordAPI = nil;
+  _sendTabAPI = nil;
   _syncProfileService = nil;
   _syncAPI = nil;
 
@@ -309,6 +315,17 @@ static bool CustomLogHandler(int severity,
         [[BravePasswordAPI alloc] initWithPasswordStore:password_store_];
   }
   return _passwordAPI;
+}
+
+- (BraveSendTabAPI*)sendTabAPI {
+  if (!_sendTabAPI) {
+    send_tab_to_self::SendTabToSelfSyncService* sync_service_ =
+      SendTabToSelfSyncServiceFactory::GetForBrowserState(_mainBrowserState);
+    
+    _sendTabAPI = 
+        [[BraveSendTabAPI alloc] initWithSyncService:sync_service_];
+  }
+  return _sendTabAPI;
 }
 
 - (BraveSyncAPI*)syncAPI {
