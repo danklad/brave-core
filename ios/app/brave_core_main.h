@@ -12,6 +12,7 @@
 @class BraveHistoryAPI;
 @class BravePasswordAPI;
 @class BraveOpenTabsAPI;
+@class BraveSendTabAPI;
 @class BraveSyncAPI;
 @class BraveSyncProfileServiceIOS;
 @class BraveStats;
@@ -56,6 +57,8 @@ OBJC_EXPORT
 @property(nonatomic, readonly) BravePasswordAPI* passwordAPI;
 
 @property(nonatomic, readonly) BraveOpenTabsAPI* openTabsAPI;
+
+@property(nonatomic, readonly) BraveSendTabAPI* sendTabAPI;
 
 @property(nonatomic, readonly) BraveSyncAPI* syncAPI;
 
