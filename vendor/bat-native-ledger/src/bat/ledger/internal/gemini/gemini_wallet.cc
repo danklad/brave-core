@@ -46,19 +46,18 @@ void GeminiWallet::Generate(ledger::ResultCallback callback) {
 
   if (wallet->status == type::WalletStatus::VERIFIED ||
       wallet->status == type::WalletStatus::DISCONNECTED_VERIFIED) {
-    ledger_->promotion()->TransferTokens(
-        [callback](const type::Result result, const std::string& drain_id) {
+    return ledger_->promotion()->TransferTokens(base::BindOnce(
+        [](ledger::ResultCallback callback, type::Result result, std::string) {
           if (result != type::Result::LEDGER_OK) {
             BLOG(0, "Claiming tokens failed");
-            callback(type::Result::CONTINUE);
-            return;
+            return std::move(callback).Run(type::Result::CONTINUE);
           }
-          callback(type::Result::LEDGER_OK);
-        });
-    return;
+          std::move(callback).Run(type::Result::LEDGER_OK);
+        },
+        std::move(callback)));
   }
 
-  callback(type::Result::LEDGER_OK);
+  std::move(callback).Run(type::Result::LEDGER_OK);
 }
 
 }  // namespace gemini

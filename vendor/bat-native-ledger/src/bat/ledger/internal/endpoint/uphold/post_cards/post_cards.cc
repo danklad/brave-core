@@ -86,10 +86,8 @@ type::Result PostCards::ParseBody(
 void PostCards::Request(
     const std::string& token,
     PostCardsCallback callback) {
-  auto url_callback = std::bind(&PostCards::OnRequest,
-      this,
-      _1,
-      callback);
+  auto url_callback = base::BindOnce(
+      &PostCards::OnRequest, base::Unretained(this), std::move(callback));
 
   auto request = type::UrlRequest::New();
   request->url = GetUrl();
@@ -97,24 +95,23 @@ void PostCards::Request(
   request->headers = RequestAuthorization(token);
   request->content_type = "application/json; charset=utf-8";
   request->method = type::UrlMethod::POST;
-  ledger_->LoadURL(std::move(request), url_callback);
+  ledger_->LoadURL(std::move(request), std::move(url_callback));
 }
 
-void PostCards::OnRequest(
-    const type::UrlResponse& response,
-    PostCardsCallback callback) {
+void PostCards::OnRequest(PostCardsCallback callback,
+                          const type::UrlResponse& response) {
   ledger::LogUrlResponse(__func__, response, true);
 
   type::Result result = CheckStatusCode(response.status_code);
 
   if (result != type::Result::LEDGER_OK) {
-    callback(result, "");
+    std::move(callback).Run(result, "");
     return;
   }
 
   std::string id;
   result = ParseBody(response.body, &id);
-  callback(result, id);
+  std::move(callback).Run(result, id);
 }
 
 }  // namespace uphold

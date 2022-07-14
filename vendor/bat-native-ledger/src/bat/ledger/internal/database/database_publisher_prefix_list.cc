@@ -96,7 +96,7 @@ void DatabasePublisherPrefixList::Search(
 
 void DatabasePublisherPrefixList::Reset(
     std::unique_ptr<publisher::PrefixListReader> reader,
-    ledger::ResultCallback callback) {
+    ledger::LegacyResultCallback callback) {
   if (reader_) {
     BLOG(1, "Publisher prefix list batch insert in progress");
     callback(type::Result::LEDGER_ERROR);
@@ -113,7 +113,7 @@ void DatabasePublisherPrefixList::Reset(
 
 void DatabasePublisherPrefixList::InsertNext(
     publisher::PrefixIterator begin,
-    ledger::ResultCallback callback) {
+    ledger::LegacyResultCallback callback) {
   DCHECK(reader_ && begin != reader_->end());
 
   auto transaction = type::DBTransaction::New();

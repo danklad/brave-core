@@ -69,9 +69,8 @@ DatabaseMigration::DatabaseMigration(LedgerImpl* ledger) :
 
 DatabaseMigration::~DatabaseMigration() = default;
 
-void DatabaseMigration::Start(
-    const uint32_t table_version,
-    ledger::ResultCallback callback) {
+void DatabaseMigration::Start(uint32_t table_version,
+                              ledger::LegacyResultCallback callback) {
   const uint32_t start_version = table_version + 1;
   DCHECK_GT(start_version, 0u);
 
