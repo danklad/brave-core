@@ -5,15 +5,66 @@
 
 #include "third_party/blink/renderer/core/execution_context/navigator_base.h"
 
+#include "base/compiler_specific.h"
+#include "base/system/sys_info.h"
+#include "third_party/abseil-cpp/absl/random/random.h"
 #include "third_party/blink/public/platform/web_content_settings_client.h"
+#include "third_party/blink/renderer/core/execution_context/execution_context.h"
 #include "third_party/blink/renderer/core/frame/local_dom_window.h"
 #include "third_party/blink/renderer/core/frame/local_frame.h"
 #include "third_party/blink/renderer/core/loader/frame_loader.h"
+#include "third_party/blink/renderer/core/probe/core_probes.h"
+
+namespace blink {
+namespace probe {
+
+const unsigned kFakeMinProcessors = 2;
+const unsigned kFakeMaxProcessors = 8;
+
+void ApplyBraveHardwareConcurrencyOverride(
+    blink::ExecutionContext* context,
+    unsigned int& hardware_concurrency) {
+  unsigned true_value =
+      static_cast<unsigned>(base::SysInfo::NumberOfProcessors());
+  if (true_value <= 2) {
+    hardware_concurrency = true_value;
+    return;
+  }
+  unsigned farbled_value = true_value;
+  switch (brave::GetBraveFarblingLevelFor(context, BraveFarblingLevel::OFF)) {
+    case BraveFarblingLevel::OFF: {
+      break;
+    }
+    case BraveFarblingLevel::MAXIMUM: {
+      true_value = kFakeMaxProcessors;
+      // "Maximum" behavior is "balanced" behavior but with a fake maximum,
+      // so fall through here.
+      [[fallthrough]];
+    }
+    case BraveFarblingLevel::BALANCED: {
+      brave::FarblingPRNG prng =
+          brave::BraveSessionCache::From(*context).MakePseudoRandomGenerator();
+      farbled_value =
+          kFakeMinProcessors + (prng() % (true_value + 1 - kFakeMinProcessors));
+      break;
+    }
+    default:
+      NOTREACHED();
+  }
+  hardware_concurrency = farbled_value;
+}
+
+}  // namespace probe
+}  // namespace blink
 
 #define userAgent userAgent_ChromiumImpl
-#define hardwareConcurrency hardwareConcurrency_ChromiumImpl
+#define ApplyHardwareConcurrencyOverride                       \
+  ApplyBraveHardwareConcurrencyOverride(GetExecutionContext(), \
+                                        hardware_concurrency); \
+      probe::ApplyHardwareConcurrencyOverride
+
 #include "src/third_party/blink/renderer/core/execution_context/navigator_base.cc"
-#undef hardwareConcurrency
+#undef ApplyHardwareConcurrencyOverride
 #undef userAgent
 
 namespace blink {
@@ -28,15 +79,6 @@ String NavigatorBase::userAgent() const {
   }
 
   return userAgent_ChromiumImpl();
-}
-
-unsigned NavigatorBase::hardwareConcurrency(ScriptState* script_state) const {
-  unsigned hardware_concurrency =
-      NavigatorConcurrentHardware::hardwareConcurrency(script_state);
-
-  probe::ApplyHardwareConcurrencyOverride(
-      probe::ToCoreProbeSink(GetExecutionContext()), hardware_concurrency);
-  return hardware_concurrency;
 }
 
 }  // namespace blink
