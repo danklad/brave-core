@@ -1,16 +1,8 @@
 diff --git a/chrome/browser/resources/settings/BUILD.gn b/chrome/browser/resources/settings/BUILD.gn
-index e60915c029835a697e0eda2042ba237300d532c3..d1d6005a77a5fd5ee68efd4d1c937c093c82f1f0 100644
+index 5e9e4797a9add24acad64387683ced62d130feaf..be074c0b9c18bab3298573318b33e95fa8f7bbe0 100644
 --- a/chrome/browser/resources/settings/BUILD.gn
 +++ b/chrome/browser/resources/settings/BUILD.gn
-@@ -145,6 +145,7 @@ generate_grd("build_grd") {
-     deps = [ ":build_ts" ]
-     manifest_files = [ "$target_gen_dir/tsconfig.manifest" ]
-   }
-+  deps += [ "//brave/browser/resources/settings:resources" ]
- }
- 
- preprocess_if_expr("preprocess") {
-@@ -239,14 +240,6 @@ if (is_chromeos_ash) {
+@@ -151,14 +151,6 @@ if (is_chromeos_ash) {
      extra_deps = [ ":build_ts" ]
    }
  
@@ -25,7 +17,7 @@ index e60915c029835a697e0eda2042ba237300d532c3..d1d6005a77a5fd5ee68efd4d1c937c09
    js_library("setting_id_param_util") {
      sources = [ "$root_gen_dir/chrome/browser/resources/settings/tsc/setting_id_param_util.js" ]
      deps = [
-@@ -257,6 +250,15 @@ if (is_chromeos_ash) {
+@@ -169,6 +161,15 @@ if (is_chromeos_ash) {
    }
  }
  
@@ -41,10 +33,18 @@ index e60915c029835a697e0eda2042ba237300d532c3..d1d6005a77a5fd5ee68efd4d1c937c09
  html_to_js("css_wrapper_files_old") {
    js_files = css_wrapper_files_old
  }
-@@ -308,4 +310,6 @@ ts_library("build_ts") {
+@@ -220,6 +221,8 @@ ts_library("build_ts") {
      ":preprocess",
      ":preprocess_generated",
    ]
 +  in_files += brave_deps_chrome_browser_resources_settings_in_files extra_deps += brave_deps_chrome_browser_resources_settings_extra_deps
 +
+ }
+ 
+ generate_grd("build_grd") {
+@@ -308,4 +311,5 @@ generate_grd("build_grd") {
+     manifest_files =
+         filter_include(get_target_outputs(":build_ts"), [ "*.manifest" ])
+   }
++  deps += [ "//brave/browser/resources/settings:resources" ]
  }
