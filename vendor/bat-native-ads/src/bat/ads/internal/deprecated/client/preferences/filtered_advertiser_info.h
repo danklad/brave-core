@@ -8,6 +8,8 @@
 
 #include <string>
 
+#include "base/values.h"
+
 namespace ads {
 
 struct FilteredAdvertiserInfo final {
@@ -16,8 +18,8 @@ struct FilteredAdvertiserInfo final {
   FilteredAdvertiserInfo& operator=(const FilteredAdvertiserInfo& info);
   ~FilteredAdvertiserInfo();
 
-  std::string ToJson() const;
-  bool FromJson(const std::string& json);
+  base::Value::Dict ToValue() const;
+  bool FromValue(const base::Value::Dict& value);
 
   std::string id;
 };

@@ -8,6 +8,8 @@
 
 #include <string>
 
+#include "base/values.h"
+
 namespace ads {
 
 struct SavedAdInfo final {
@@ -16,8 +18,8 @@ struct SavedAdInfo final {
   SavedAdInfo& operator=(const SavedAdInfo& info);
   ~SavedAdInfo();
 
-  std::string ToJson() const;
-  bool FromJson(const std::string& json);
+  base::Value::Dict ToValue() const;
+  bool FromValue(const base::Value::Dict& value);
 
   std::string creative_instance_id;
 };

@@ -20,7 +20,6 @@
 #include "bat/ads/internal/base/logging_util.h"
 #include "bat/ads/internal/deprecated/client/client_info.h"
 #include "bat/ads/internal/deprecated/client/client_state_manager_constants.h"
-#include "bat/ads/internal/deprecated/json/json_helper.h"
 #include "bat/ads/internal/features/text_classification_features.h"
 #include "bat/ads/internal/history/history_constants.h"
 #include "bat/ads/internal/resources/behavioral/purchase_intent/purchase_intent_signal_history_info.h"
@@ -613,8 +612,7 @@ void ClientStateManager::OnLoaded(const bool success, const std::string& json) {
 
 bool ClientStateManager::FromJson(const std::string& json) {
   ClientInfo client;
-  const bool success = LoadFromJson(&client, json);
-  if (!success) {
+  if (!client.FromJson(json)) {
     return false;
   }
 

@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 
+#include "base/values.h"
 #include "bat/ads/export.h"
 
 namespace ads {
@@ -20,6 +21,9 @@ struct ADS_EXPORT HistoryInfo final {
   HistoryInfo(const HistoryInfo& info);
   HistoryInfo& operator=(const HistoryInfo& info);
   ~HistoryInfo();
+
+  base::Value::Dict ToValue() const;
+  bool FromValue(const base::Value::Dict& value);
 
   std::string ToJson() const;
   bool FromJson(const std::string& json);

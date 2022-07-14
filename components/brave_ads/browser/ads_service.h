@@ -50,7 +50,7 @@ using OnToggleSavedAdCallback = base::OnceCallback<void(const std::string&)>;
 using OnToggleFlaggedAdCallback = base::OnceCallback<void(const std::string&)>;
 
 using OnMaybeServeInlineContentAdCallback = base::OnceCallback<
-    void(const bool, const std::string&, const base::DictionaryValue&)>;
+    void(const bool, const std::string&, const base::Value::Dict&)>;
 
 using TriggerSearchResultAdEventCallback =
     base::OnceCallback<void(const bool,

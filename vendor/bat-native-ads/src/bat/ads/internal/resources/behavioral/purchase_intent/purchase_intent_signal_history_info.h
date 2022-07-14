@@ -10,6 +10,7 @@
 #include <string>
 
 #include "base/time/time.h"
+#include "base/values.h"
 
 namespace ads {
 namespace targeting {
@@ -26,8 +27,8 @@ struct PurchaseIntentSignalHistoryInfo final {
   bool operator==(const PurchaseIntentSignalHistoryInfo& rhs) const;
   bool operator!=(const PurchaseIntentSignalHistoryInfo& rhs) const;
 
-  std::string ToJson() const;
-  bool FromJson(const std::string& json);
+  base::Value::Dict ToValue() const;
+  bool FromValue(const base::Value::Dict& value);
 
   base::Time created_at;
   uint16_t weight = 0;
