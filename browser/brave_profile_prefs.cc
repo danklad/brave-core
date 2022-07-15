@@ -152,6 +152,13 @@ using extensions::FeatureSwitch;
 
 namespace brave {
 
+namespace {
+
+// Deprecated 07/2022
+const char kPrivacySandboxFlocEnabled[] = "privacy_sandbox.floc_enabled";
+
+}  // namespace
+
 void RegisterProfilePrefsForMigration(
     user_prefs::PrefRegistrySyncable* registry) {
 #if BUILDFLAG(ENABLE_WIDEVINE)
@@ -324,8 +331,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
                                 base::Value(false));
 
   // Disable Chromium's privacy sandbox
-  registry->SetDefaultPrefValue(prefs::kPrivacySandboxFlocEnabled,
-                                base::Value(false));
+  registry->SetDefaultPrefValue(kPrivacySandboxFlocEnabled, base::Value(false));
 
   // Importer: selected data types
   registry->RegisterBooleanPref(kImportDialogExtensions, true);
