@@ -38,6 +38,11 @@
 #include "third_party/icu/source/i18n/unicode/timezone.h"
 #endif  // !BUILDFLAG(IS_ANDROID)
 
+//#if BUILDFLAG(IS_ANDROID) TODO(bsclifton): uncomment me
+#include "base/base64.h"
+#include "base/strings/stringprintf.h"
+//#endif  // BUILDFLAG(IS_ANDROID) TODO(bsclifton): uncomment me
+
 namespace {
 
 constexpr char kVpnHost[] = "connect-api.guardianapp.com";
@@ -877,20 +882,35 @@ void BraveVpnService::OnSuspend() {
 void BraveVpnService::OnResume() {}
 #endif  // !BUILDFLAG(IS_ANDROID)
 
-#if BUILDFLAG(IS_ANDROID)
+//#if BUILDFLAG(IS_ANDROID) TODO(bsclifton): uncomment me
 void BraveVpnService::GetPurchaseToken(GetPurchaseTokenCallback callback) {
-  // TODO(bsclifton): read purchase token from prefs
-  // for example:
-  //
-  // auto* preference =
-  //     prefs_->FindPreference(prefs::kBraveVPNPurchaseTokenAndroid);
+  std::string purchase_token_string;
+  auto* purchase_token =
+      prefs_->FindPreference(prefs::kBraveVPNPurchaseTokenAndroid);
+  if (purchase_token && !purchase_token->IsDefaultValue()) {
+    purchase_token_string =
+        prefs_->GetString(prefs::kBraveVPNPurchaseTokenAndroid);
+    // TODO(bsclifton): handle when this is NOT set.
+    // Above default value is only for testing.
+  }
 
-  std::move(callback).Run(
-      "oohdhbmbebmciddpbcicgnko.AO-J1OxJGS6-"
-      "tNYvzofx7RO2hJSEgQmi6tOrLHEB4zJ2OhsyhX3mhEe4QKS0MVxtJCBNIAlBP5jAgDPqdXDN"
-      "z15JhIXt5QYcIExIxe5H5ifbhAsHILlUXlE");
+  // TODO(bsclifton): remove me. This is for testing only
+  if (purchase_token_string.length() == 0) {
+    purchase_token_string =
+        "oohdhbmbebmciddpbcicgnko.AO-J1OxJGS6-"
+        "tNYvzofx7RO2hJSEgQmi6tOrLHEB4zJ2OhsyhX3mhEe4QKS0MVxtJCBNIAlBP5jAgDPqdX"
+        "DNz15JhIXt5QYcIExIxe5H5ifbhAsHILlUXlE";
+  }
+
+  std::string response = base::StringPrintf(
+      "{\"type\": \"%s\", \"raw_receipt\": \"%s\", \"package\":\"%s\", "
+      "\"subscription_id\": \"%s\"}",
+      "android", purchase_token_string.c_str(), "com.brave.browser",
+      "brave-firewall-vpn-premium");
+  base::Base64Encode(response, &response);
+  std::move(callback).Run(response);
 }
-#endif
+//#endif TODO(bsclifton): uncomment me
 
 void BraveVpnService::AddObserver(
     mojo::PendingRemote<mojom::ServiceObserver> observer) {

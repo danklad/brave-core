@@ -82,7 +82,7 @@ interface ServiceHandler {
   [EnableIfNot=is_android]
   CreateSupportTicket(string email, string subject, string body) => (bool success, string response);
 
-  [EnableIf=is_android]
+  //[EnableIf=is_android] TODO(bsclifton): uncomment me
   GetPurchaseToken() => (string token);
 };
 

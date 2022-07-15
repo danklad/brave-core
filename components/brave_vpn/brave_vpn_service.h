@@ -111,9 +111,9 @@ class BraveVpnService :
   void OnResume() override;
 #endif  // !BUILDFLAG(IS_ANDROID)
 
-#if BUILDFLAG(IS_ANDROID)
+//#if BUILDFLAG(IS_ANDROID) TODO(bsclifton): uncomment me
   void GetPurchaseToken(GetPurchaseTokenCallback callback) override;
-#endif  // BUILDFLAG(IS_ANDROID)
+//#endif  // BUILDFLAG(IS_ANDROID) TODO(bsclifton): uncomment me
 
   using ResponseCallback =
       base::OnceCallback<void(const std::string&, bool success)>;
