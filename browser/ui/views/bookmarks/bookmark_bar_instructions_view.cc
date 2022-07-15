@@ -16,7 +16,6 @@
 #include "chrome/browser/themes/theme_properties.h"
 #include "chrome/browser/ui/chrome_pages.h"
 #include "ui/accessibility/ax_node_data.h"
-#include "ui/base/theme_provider.h"
 #include "ui/color/color_id.h"
 #include "ui/color/color_provider.h"
 #include "ui/events/event.h"
@@ -124,16 +123,16 @@ void BookmarkBarInstructionsView::ShowContextMenuForViewImpl(
 
 void BookmarkBarInstructionsView::UpdateColors() {
   // We don't always have a theme provider (ui tests, for example).
-  const ui::ThemeProvider* theme_provider = GetThemeProvider();
-  if (!theme_provider)
+  const ui::ColorProvider* colour_provider = GetColorProvider();
+  if (!colour_provider)
     return;
   updated_colors_ = true;
-  SkColor text_color = theme_provider->GetColor(
+  SkColor text_color = colour_provider->GetColor(
       BraveThemeProperties::COLOR_BOOKMARK_BAR_INSTRUCTIONS_TEXT);
   instructions_->SetEnabledColor(text_color);
   if (!import_link_)
     return;
 
-  SkColor link_color = GetColorProvider()->GetColor(ui::kColorLinkForeground);
+  SkColor link_color = colour_provider->GetColor(ui::kColorLinkForeground);
   import_link_->SetEnabledColor(link_color);
 }
