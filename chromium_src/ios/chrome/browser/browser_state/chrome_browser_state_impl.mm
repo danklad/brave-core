@@ -14,13 +14,16 @@
 #define BrowserPolicyConnectorIOS \
   if (false) {                    \
   BrowserPolicyConnectorIOS
-#define BRAVE_CHROME_BROWSER_STATE_IMPL_CHROME_BROWSER_STATE_IMPL_CLOSE_IF }
+
+#undef BuildBrowserStatePolicyConnector
+#define BuildBrowserStatePolicyConnector(ARG1, ARG2, ARG3) nullptr; }
+
 #define GetPolicyConnector GetPolicyConnector_ChromiumImpl
 
 #include "src/ios/chrome/browser/browser_state/chrome_browser_state_impl.mm"
 
 #undef GetPolicyConnector
-#undef BRAVE_CHROME_BROWSER_STATE_IMPL_CHROME_BROWSER_STATE_IMPL_CLOSE_IF
+#undef BuildBrowserStatePolicyConnector
 #undef BrowserPolicyConnectorIOS
 
 BrowserStatePolicyConnector* ChromeBrowserStateImpl::GetPolicyConnector() {
