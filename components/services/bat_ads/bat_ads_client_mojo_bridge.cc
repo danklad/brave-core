@@ -284,12 +284,12 @@ void BatAdsClientMojoBridge::ShowScheduledCaptchaNotification(
   bat_ads_client_->ShowScheduledCaptchaNotification(payment_id, captcha_id);
 }
 
-void BatAdsClientMojoBridge::OnAdRewardsChanged() {
+void BatAdsClientMojoBridge::UpdateAdRewards() {
   if (!connected()) {
     return;
   }
 
-  bat_ads_client_->OnAdRewardsChanged();
+  bat_ads_client_->UpdateAdRewards();
 }
 
 void BatAdsClientMojoBridge::Log(

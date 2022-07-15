@@ -126,7 +126,7 @@ enum class NTPCustomizeUsage { kNeverOpened, kOpened, kOpenedAndEdited, kSize };
 const char kNTPCustomizeUsageStatus[] =
     "brave.new_tab_page.customize_p3a_usage";
 
-const char kNeedsBrowserUpdateToSeeAds[] = "needsBrowserUpdateToSeeAds";
+const char kNeedsBrowserUpdateToViewAds[] = "needsBrowserUpdateToViewAds";
 
 }  // namespace
 
@@ -598,14 +598,14 @@ base::Value BraveNewTabMessageHandler::GetAdsDataDictionary() const {
   bool needs_browser_update_to_see_ads = false;
   if (ads_service_) {
     needs_browser_update_to_see_ads =
-        ads_service_->NeedsBrowserUpdateToSeeAds();
+        ads_service_->NeedsBrowserUpdateToViewAds();
   }
-  ads_data.Set(kNeedsBrowserUpdateToSeeAds, needs_browser_update_to_see_ads);
+  ads_data.Set(kNeedsBrowserUpdateToViewAds, needs_browser_update_to_see_ads);
 
   return base::Value(std::move(ads_data));
 }
 
-void BraveNewTabMessageHandler::OnNeedsBrowserUpdateToSeeAds() {
+void BraveNewTabMessageHandler::OnNeedsBrowserUpdateToViewAds() {
   base::Value data = GetAdsDataDictionary();
   FireWebUIListener("new-tab-ads-data-updated", std::move(data));
 }

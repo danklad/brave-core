@@ -137,7 +137,7 @@ export const newTabReducer: Reducer<NewTab.State | undefined> = (state: NewTab.S
 
     case types.NEW_TAB_ADS_DATA_UPDATED:
       const newTabAdsData = payload as NewTabAdsData
-      state.rewardsState.needsBrowserUpdateToSeeAds = newTabAdsData.needsBrowserUpdateToSeeAds
+      state.rewardsState.needsBrowserUpdateToViewAds = newTabAdsData.needsBrowserUpdateToViewAds
       break
 
     case types.NEW_TAB_DISMISS_BRANDED_WALLPAPER_NOTIFICATION:

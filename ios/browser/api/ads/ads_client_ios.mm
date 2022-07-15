@@ -125,8 +125,8 @@ void AdsClientIOS::RunDBTransaction(ads::mojom::DBTransactionPtr transaction,
   [bridge_ runDBTransaction:std::move(transaction) callback:callback];
 }
 
-void AdsClientIOS::OnAdRewardsChanged() {
-  [bridge_ onAdRewardsChanged];
+void AdsClientIOS::updateAdRewards() {
+  [bridge_ updateAdRewards];
 }
 
 void AdsClientIOS::SetBooleanPref(const std::string& path, const bool value) {

@@ -215,9 +215,9 @@ void UnitTestBase::Initialize() {
 }
 
 void UnitTestBase::SetDefaultMocks() {
-  MockBuildChannel(BuildChannelType::kRelease);
-
   MockEnvironment(mojom::Environment::kStaging);
+
+  MockBuildChannel(BuildChannelType::kRelease);
 
   MockLocaleHelper(locale_helper_mock_, kDefaultLocale);
 
@@ -239,10 +239,15 @@ void UnitTestBase::SetDefaultMocks() {
 
   MockGetBrowsingHistory(ads_client_mock_);
 
+  MockSave(ads_client_mock_);
   MockLoad(ads_client_mock_, temp_dir_);
   MockLoadFileResource(ads_client_mock_);
   MockLoadDataResource(ads_client_mock_);
-  MockSave(ads_client_mock_);
+
+  const base::FilePath database_path =
+      temp_dir_.GetPath().AppendASCII(kDatabaseFilename);
+  database_ = std::make_unique<Database>(database_path);
+  MockRunDBTransaction(ads_client_mock_, database_);
 
   MockGetBooleanPref(ads_client_mock_);
   MockSetBooleanPref(ads_client_mock_);
@@ -260,11 +265,6 @@ void UnitTestBase::SetDefaultMocks() {
   MockSetTimePref(ads_client_mock_);
   MockClearPref(ads_client_mock_);
   MockHasPrefPath(ads_client_mock_);
-
-  const base::FilePath database_path =
-      temp_dir_.GetPath().AppendASCII(kDatabaseFilename);
-  database_ = std::make_unique<Database>(database_path);
-  MockRunDBTransaction(ads_client_mock_, database_);
 }
 
 void UnitTestBase::SetDefaultPrefs() {

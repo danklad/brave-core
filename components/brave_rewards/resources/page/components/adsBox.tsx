@@ -411,7 +411,7 @@ class AdsBox extends React.Component<Props, State> {
     let earningsThisMonth = 0
     let earningsLastMonth = 0
     let adEarningsReceived = false
-    let needsBrowserUpdateToSeeAds = false
+    let needsBrowserUpdateToViewAds = false
 
     const {
       adsData,
@@ -430,7 +430,7 @@ class AdsBox extends React.Component<Props, State> {
       adsReceivedThisMonth = adsData.adsReceivedThisMonth || 0
       earningsThisMonth = adsData.adsEarningsThisMonth || 0
       earningsLastMonth = adsData.adsEarningsLastMonth || 0
-      needsBrowserUpdateToSeeAds = adsData.needsBrowserUpdateToSeeAds
+      needsBrowserUpdateToViewAds = adsData.needsBrowserUpdateToViewAds
     }
 
     if (balanceReport) {
@@ -468,7 +468,7 @@ class AdsBox extends React.Component<Props, State> {
           onSettingsClick={this.onSettingsToggle}
           attachedAlert={this.adsNotSupportedAlert(adsIsSupported)}
           headerAlert={
-            (needsBrowserUpdateToSeeAds && !this.state.settings)
+            (needsBrowserUpdateToViewAds && !this.state.settings)
               ? this.needsBrowserUpdateView()
               : null
           }

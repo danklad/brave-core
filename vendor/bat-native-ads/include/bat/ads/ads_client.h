@@ -44,7 +44,7 @@ class ADS_EXPORT AdsClient {
   virtual bool CanShowBackgroundNotifications() const = 0;
 
   // Display |notification_ad| on the screen.
-  virtual void ShowNotification(const NotificationAdInfo& notification_ad) = 0;
+  virtual void ShowNotification(const NotificationAdInfo& ad) = 0;
 
   // Close the notification for the specified |uuid|.
   virtual void CloseNotification(const std::string& uuid) = 0;
@@ -101,9 +101,6 @@ class ADS_EXPORT AdsClient {
   // successful otherwise an empty string.
   virtual std::string LoadDataResource(const std::string& name) = 0;
 
-  // Clear the currently scheduled captcha, if any.
-  virtual void ClearScheduledCaptcha() = 0;
-
   // Retrieves the captcha scheduled for the specified |payment_id|, if any. The
   // callback takes 1 argument - |std::string| containing a captcha id if the
   // user must solve a captcha otherwise the an empty string.
@@ -117,13 +114,16 @@ class ADS_EXPORT AdsClient {
       const std::string& payment_id,
       const std::string& captcha_id) = 0;
 
+  // Clear the currently scheduled captcha, if any.
+  virtual void ClearScheduledCaptcha() = 0;
+
   // Run a database transaction. The callback takes one argument -
   // |mojom::DBCommandResponsePtr| containing the info of the transaction.
   virtual void RunDBTransaction(mojom::DBTransactionPtr transaction,
                                 RunDBTransactionCallback callback) = 0;
 
-  // Called to notify that ad rewards have changed.
-  virtual void OnAdRewardsChanged() = 0;
+  // Called to update brave://rewards.
+  virtual void UpdateAdRewards() = 0;
 
   // Record a P2A (Privacy Preserving Anonymous) event with |value| for the
   // specfied |name|.
@@ -135,15 +135,8 @@ class ADS_EXPORT AdsClient {
       const std::vector<brave_federated::mojom::CovariatePtr>
           training_instance) = 0;
 
-  // Log a |message| to |file| and the console log with |line| and
-  // |verbose_level|.
-  virtual void Log(const char* file,
-                   const int line,
-                   const int verbose_level,
-                   const std::string& message) = 0;
-
-  // Get the value from the specified preference |path|. Returns a default value
-  // if the path does not exist.
+  // Get the value from the specified preference |path|. Returns the default
+  // value if the path does not exist.
   virtual bool GetBooleanPref(const std::string& path) const = 0;
   virtual int GetIntegerPref(const std::string& path) const = 0;
   virtual double GetDoublePref(const std::string& path) const = 0;
@@ -167,6 +160,13 @@ class ADS_EXPORT AdsClient {
 
   // Returns |true| if a value has been set for the specified preference |path|.
   virtual bool HasPrefPath(const std::string& path) const = 0;
+
+  // Log a |message| to |file| and the console log with |line| and
+  // |verbose_level|.
+  virtual void Log(const char* file,
+                   const int line,
+                   const int verbose_level,
+                   const std::string& message) = 0;
 };
 
 }  // namespace ads

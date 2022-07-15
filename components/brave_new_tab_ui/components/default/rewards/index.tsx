@@ -46,7 +46,7 @@ export function RewardsContextAdapter (props: { children: React.ReactNode }) {
 export interface RewardsProps {
   rewardsEnabled: boolean
   enabledAds: boolean
-  needsBrowserUpdateToSeeAds: boolean
+  needsBrowserUpdateToViewAds: boolean
   balance: NewTab.RewardsBalance
   externalWallet?: RewardsExtension.ExternalWallet
   report?: NewTab.RewardsBalanceReport
@@ -110,7 +110,7 @@ export const RewardsWidget = createWidget((props: RewardsProps) => {
       rewardsEnabled={props.rewardsEnabled}
       adsEnabled={props.enabledAds}
       adsSupported={Boolean(props.adsSupported)}
-      needsBrowserUpdateToSeeAds={props.needsBrowserUpdateToSeeAds}
+      needsBrowserUpdateToViewAds={props.needsBrowserUpdateToViewAds}
       rewardsBalance={props.balance.total}
       exchangeCurrency='USD'
       exchangeRate={props.parameters.rate}

@@ -21,9 +21,9 @@ namespace ads {
 
 class Database;
 
-void MockBuildChannel(const BuildChannelType type);
-
 void MockEnvironment(const mojom::Environment environment);
+
+void MockBuildChannel(const BuildChannelType type);
 
 void MockLocaleHelper(const std::unique_ptr<brave_l10n::LocaleHelperMock>& mock,
                       const std::string& locale);
@@ -54,14 +54,14 @@ void MockResetAdEventsForId(const std::unique_ptr<AdsClientMock>& mock);
 
 void MockGetBrowsingHistory(const std::unique_ptr<AdsClientMock>& mock);
 
+void MockUrlRequest(const std::unique_ptr<AdsClientMock>& mock,
+                    const URLEndpointMap& endpoints);
+
+void MockSave(const std::unique_ptr<AdsClientMock>& mock);
 void MockLoad(const std::unique_ptr<AdsClientMock>& mock,
               const base::ScopedTempDir& temp_dir);
 void MockLoadFileResource(const std::unique_ptr<AdsClientMock>& mock);
 void MockLoadDataResource(const std::unique_ptr<AdsClientMock>& mock);
-void MockSave(const std::unique_ptr<AdsClientMock>& mock);
-
-void MockUrlRequest(const std::unique_ptr<AdsClientMock>& mock,
-                    const URLEndpointMap& endpoints);
 
 void MockRunDBTransaction(const std::unique_ptr<AdsClientMock>& mock,
                           const std::unique_ptr<Database>& database);

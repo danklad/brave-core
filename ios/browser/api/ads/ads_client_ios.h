@@ -60,7 +60,7 @@ class AdsClientIOS : public ads::AdsClient {
            const std::string& message) override;
   void RunDBTransaction(ads::mojom::DBTransactionPtr transaction,
                         ads::RunDBTransactionCallback callback) override;
-  void OnAdRewardsChanged() override;
+  void UpdateAdRewards() override;
   void SetBooleanPref(const std::string& path, const bool value) override;
   bool GetBooleanPref(const std::string& path) const override;
   void SetIntegerPref(const std::string& path, const int value) override;

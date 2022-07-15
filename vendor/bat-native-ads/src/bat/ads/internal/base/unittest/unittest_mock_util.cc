@@ -55,6 +55,10 @@ PrefMap& GetPrefs() {
 
 }  // namespace
 
+void MockEnvironment(const mojom::Environment environment) {
+  g_environment = environment;
+}
+
 void MockBuildChannel(const BuildChannelType type) {
   switch (type) {
     case BuildChannelType::kNightly: {
@@ -78,10 +82,6 @@ void MockBuildChannel(const BuildChannelType type) {
 
   NOTREACHED() << "Unexpected value for BuildChannelType: "
                << static_cast<int>(type);
-}
-
-void MockEnvironment(const mojom::Environment environment) {
-  g_environment = environment;
 }
 
 void MockLocaleHelper(const std::unique_ptr<brave_l10n::LocaleHelperMock>& mock,
@@ -173,9 +173,8 @@ void MockCanShowBackgroundNotifications(
 
 void MockShowNotification(const std::unique_ptr<AdsClientMock>& mock) {
   ON_CALL(*mock, ShowNotification(_))
-      .WillByDefault(Invoke([](const NotificationAdInfo& notification_ad) {
-        CHECK(notification_ad.IsValid());
-      }));
+      .WillByDefault(
+          Invoke([](const NotificationAdInfo& ad) { CHECK(ad.IsValid()); }));
 }
 
 void MockCloseNotification(const std::unique_ptr<AdsClientMock>& mock) {
@@ -269,6 +268,30 @@ void MockGetBrowsingHistory(const std::unique_ptr<AdsClientMock>& mock) {
       }));
 }
 
+void MockUrlRequest(const std::unique_ptr<AdsClientMock>& mock,
+                    const URLEndpointMap& endpoints) {
+  ON_CALL(*mock, UrlRequest(_, _))
+      .WillByDefault(Invoke([endpoints](const mojom::UrlRequestPtr& url_request,
+                                        UrlRequestCallback callback) {
+        mojom::UrlResponse url_response;
+
+        const absl::optional<mojom::UrlResponse> url_response_optional =
+            GetNextUrlResponse(url_request, endpoints);
+        if (url_response_optional) {
+          url_response = url_response_optional.value();
+        }
+
+        callback(url_response);
+      }));
+}
+
+void MockSave(const std::unique_ptr<AdsClientMock>& mock) {
+  ON_CALL(*mock, Save(_, _, _))
+      .WillByDefault(Invoke(
+          [](const std::string& name, const std::string& value,
+             ResultCallback callback) { callback(/* success */ true); }));
+}
+
 void MockLoad(const std::unique_ptr<AdsClientMock>& mock,
               const base::ScopedTempDir& temp_dir) {
   ON_CALL(*mock, Load(_, _))
@@ -312,30 +335,6 @@ void MockLoadDataResource(const std::unique_ptr<AdsClientMock>& mock) {
         }
 
         return content_optional.value();
-      }));
-}
-
-void MockSave(const std::unique_ptr<AdsClientMock>& mock) {
-  ON_CALL(*mock, Save(_, _, _))
-      .WillByDefault(Invoke(
-          [](const std::string& name, const std::string& value,
-             ResultCallback callback) { callback(/* success */ true); }));
-}
-
-void MockUrlRequest(const std::unique_ptr<AdsClientMock>& mock,
-                    const URLEndpointMap& endpoints) {
-  ON_CALL(*mock, UrlRequest(_, _))
-      .WillByDefault(Invoke([endpoints](const mojom::UrlRequestPtr& url_request,
-                                        UrlRequestCallback callback) {
-        mojom::UrlResponse url_response;
-
-        const absl::optional<mojom::UrlResponse> url_response_optional =
-            GetNextUrlResponse(url_request, endpoints);
-        if (url_response_optional) {
-          url_response = url_response_optional.value();
-        }
-
-        callback(url_response);
       }));
 }
 

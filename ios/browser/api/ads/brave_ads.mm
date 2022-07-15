@@ -1320,7 +1320,7 @@ BATClassAdsBridge(BOOL, isDebug, setDebug, g_is_debug)
       }));
 }
 
-- (void)onAdRewardsChanged {
+- (void)updateAdRewards {
   // Not needed on iOS because ads do not show unless you are viewing a tab
 }
 
