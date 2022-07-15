@@ -60,6 +60,9 @@ class TipMessageHandler : public WebUIMessageHandler,
   void OnRecurringTipRemoved(RewardsService* rewards_service,
                              bool success) override;
 
+  void OnPendingContributionSaved(RewardsService* rewards_service,
+                                  const ledger::type::Result result) override;
+
   void OnReconcileComplete(
       RewardsService* rewards_service,
       const ledger::type::Result result,
@@ -210,6 +213,13 @@ void TipMessageHandler::OnRecurringTipSaved(RewardsService* rewards_service,
   }
 
   FireWebUIListener("recurringTipSaved", base::Value(success));
+}
+
+void TipMessageHandler::OnPendingContributionSaved(
+    RewardsService* rewards_service,
+    const ledger::type::Result result) {
+  FireWebUIListener("pendingContributionSaved",
+                    base::Value(static_cast<int>(result)));
 }
 
 void TipMessageHandler::OnReconcileComplete(
