@@ -21,9 +21,8 @@ namespace probe {
 const unsigned kFakeMinProcessors = 2;
 const unsigned kFakeMaxProcessors = 8;
 
-void ApplyBraveHardwareConcurrencyOverride(
-    blink::ExecutionContext* context,
-    unsigned int& hardware_concurrency) {
+void ApplyBraveHardwareConcurrencyOverride(blink::ExecutionContext* context,
+                                           unsigned int& hardware_concurrency) {
   unsigned true_value =
       static_cast<unsigned>(base::SysInfo::NumberOfProcessors());
   if (true_value <= 2) {
@@ -61,7 +60,7 @@ void ApplyBraveHardwareConcurrencyOverride(
 #define ApplyHardwareConcurrencyOverride                       \
   ApplyBraveHardwareConcurrencyOverride(GetExecutionContext(), \
                                         hardware_concurrency); \
-      probe::ApplyHardwareConcurrencyOverride
+  probe::ApplyHardwareConcurrencyOverride
 
 #include "src/third_party/blink/renderer/core/execution_context/navigator_base.cc"
 #undef ApplyHardwareConcurrencyOverride
