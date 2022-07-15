@@ -13,6 +13,13 @@
 #include "components/prefs/pref_service.h"
 #include "components/privacy_sandbox/privacy_sandbox_prefs.h"
 
+namespace {
+
+// Deprecated 07/2022
+const char kPrivacySandboxFlocEnabled[] = "privacy_sandbox.floc_enabled";
+
+}  // namespace
+
 BravePrivacySandboxSettings::BravePrivacySandboxSettings(
     std::unique_ptr<Delegate> delegate,
     HostContentSettingsMap* host_content_settings_map,
@@ -38,7 +45,7 @@ BravePrivacySandboxSettings::BravePrivacySandboxSettings(
           &BravePrivacySandboxSettings::OnPrivacySandboxPrefChanged,
           base::Unretained(this)));
   user_prefs_registrar_.Add(
-      prefs::kPrivacySandboxFlocEnabled,
+      kPrivacySandboxFlocEnabled,
       base::BindRepeating(
           &BravePrivacySandboxSettings::OnPrivacySandboxPrefChanged,
           base::Unretained(this)));
@@ -55,7 +62,7 @@ void BravePrivacySandboxSettings::OnPrivacySandboxPrefChanged() {
   if (pref_service_->GetBoolean(prefs::kPrivacySandboxApisEnabledV2)) {
     pref_service_->SetBoolean(prefs::kPrivacySandboxApisEnabledV2, false);
   }
-  if (pref_service_->GetBoolean(prefs::kPrivacySandboxFlocEnabled)) {
-    pref_service_->SetBoolean(prefs::kPrivacySandboxFlocEnabled, false);
+  if (pref_service_->GetBoolean(kPrivacySandboxFlocEnabled)) {
+    pref_service_->SetBoolean(kPrivacySandboxFlocEnabled, false);
   }
 }
