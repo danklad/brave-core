@@ -10,7 +10,6 @@
 
 #include "base/threading/thread_task_runner_handle.h"
 #include "net/base/proxy_server.h"
-#include "net/proxy_resolution/configured_proxy_resolution_service.h"
 #include "net/proxy_resolution/mock_proxy_resolver.h"
 #include "net/proxy_resolution/proxy_config_with_annotation.h"
 #include "net/test/test_with_task_environment.h"
@@ -134,9 +133,8 @@ TEST_F(ProxyConfigServiceTorTest, SetProxyAuthorization) {
   const std::string isolation_key2 =
       ProxyConfigServiceTor::CircuitIsolationKey(site_url2);
 
-  auto config_service =
-      ConfiguredProxyResolutionService::CreateSystemProxyConfigService(
-          base::ThreadTaskRunnerHandle::Get());
+  auto config_service = net::ProxyConfigService::CreateSystemProxyConfigService(
+      base::ThreadTaskRunnerHandle::Get());
 
   auto* service = new ConfiguredProxyResolutionService(
       std::move(config_service),
