@@ -16,7 +16,9 @@
   BrowserPolicyConnectorIOS
 
 #undef BuildBrowserStatePolicyConnector
-#define BuildBrowserStatePolicyConnector(ARG1, ARG2, ARG3) nullptr; }
+#define BuildBrowserStatePolicyConnector(ARG1, ARG2, ARG3) \
+  nullptr;                                                 \
+  }
 
 #define GetPolicyConnector GetPolicyConnector_ChromiumImpl
 
