@@ -118,7 +118,7 @@ std::unique_ptr<PurchaseIntentInfo> PurchaseIntentInfo::CreateFromValue(
 
     std::vector<std::string> site_segments;
     for (auto& seg : *seg_list) {
-      DCHECK(set.is_int());
+      DCHECK(set.is_integer());
       site_segments.push_back(segments.at(seg.GetInt()));
     }
 

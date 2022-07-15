@@ -210,11 +210,11 @@ TEST(ValueConversionUtilsUnitTest, PermissionRequestResponseToValue) {
   //   "parentCapability":"eth_accounts"
   // }]"
 
-  base::ListValue* list_value;
-  ASSERT_TRUE(value.GetAsList(&list_value));
-  ASSERT_EQ(list_value->GetList().size(), 1UL);
+  base::Value::List* list_value = value.GetIfList();
+  ASSERT_TRUE(list_value);
+  ASSERT_EQ(list_value->size(), 1UL);
 
-  base::Value& param0 = list_value->GetList()[0];
+  base::Value& param0 = (*list_value)[0];
   base::Value* caveats = param0.FindListPath("caveats");
   ASSERT_NE(caveats, nullptr);
   ASSERT_EQ(caveats->GetList().size(), 2UL);
