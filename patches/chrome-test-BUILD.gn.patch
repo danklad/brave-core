@@ -14,8 +14,8 @@ index 358d75b0def673dae9a75dfe76fa5c1bed846951..8c8606b6647c532cf24c76c621fb8a24
  }
  
  config("pdb_larger_than_4gb") {
-   if (is_win && symbol_level == 2 && use_thin_lto) {
-+  } if (is_win) {
+-  if (is_win && symbol_level == 2 && use_thin_lto) {
++  if (is_win) {
      # These binaries create PDBs larger than 4 GiB. Increasing the PDB page
      # size allows larger PDBs, but not all tools can handle such large PDBs
      # yet.
