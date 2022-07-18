@@ -60,3 +60,6 @@ export const customBackgroundUpdated = (customBackground: CustomBackground) =>
 
 export const searchPromotionDisabled = () =>
   action(types.SEARCH_PROMOTION_DISABLED, {})
+
+export const rotateBackground = () =>
+  action(types.ROTATE_BACKGROUND, {})

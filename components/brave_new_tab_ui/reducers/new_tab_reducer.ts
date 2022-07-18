@@ -109,7 +109,13 @@ export const newTabReducer: Reducer<NewTab.State | undefined> = (state: NewTab.S
         searchPromotionEnabled: false
       }
       break
-
+    case types.ROTATE_BACKGROUND:
+      state = {
+        ...state,
+        backgroundWallpaper: backgroundAPI.randomBackgroundImage()
+      }
+      console.log('ROTATE_BACKGROUND:', state.backgroundWallpaper)
+      break
     case types.CUSTOM_BACKGROUND_UPDATED:
       // While customizing background, background has
       // custom or brave default background. Branded wallpaper will
