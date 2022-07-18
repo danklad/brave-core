@@ -8,11 +8,13 @@
 #include "brave/components/brave_wallet/common/features.h"
 #include "third_party/blink/public/common/features.h"
 
-#define kForceWebContentsDarkMode                                     \
-  kForceWebContentsDarkMode, &brave_rewards::features::kBraveRewards, \
-      &brave_today::features::kBraveNewsFeature,                      \
-      &brave_wallet::features::kNativeBraveWalletFeature,             \
-      &brave_wallet::features::kBraveWalletSolanaFeature,
+// clang-format off
+#define kForceWebContentsDarkMode kForceWebContentsDarkMode, \
+    &brave_rewards::features::kBraveRewards,                 \
+    &brave_today::features::kBraveNewsFeature,               \
+    &brave_wallet::features::kNativeBraveWalletFeature,      \
+    &brave_wallet::features::kBraveWalletSolanaFeature
+// clang-format on
 
 #include "src/chrome/browser/flags/android/chrome_feature_list.cc"
 #undef kForceWebContentsDarkMode
