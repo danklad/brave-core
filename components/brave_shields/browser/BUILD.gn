@@ -1,7 +1,7 @@
+if (!is_ios) {
+
 static_library("browser") {
   sources = [
-    "ad_block_component_installer.cc",
-    "ad_block_component_installer.h",
     "ad_block_custom_filters_provider.cc",
     "ad_block_custom_filters_provider.h",
     "ad_block_default_filters_provider.cc",
@@ -59,9 +59,9 @@ static_library("browser") {
   ]
 
   deps = [
+    ":component_installer",
     "//base",
     "//brave/components/adblock_rust_ffi",
-    "//brave/components/brave_component_updater/browser",
     "//brave/components/brave_shields/common",
     "//brave/components/brave_shields/common:mojom",
     "//brave/components/content_settings/core/common",
@@ -72,7 +72,6 @@ static_library("browser") {
     "//brave/components/p3a_utils",
     "//brave/components/resources:static_resources_grit",
     "//brave/components/resources:strings_grit",
-    "//components/component_updater:component_updater",
     "//components/content_settings/core/browser",
     "//components/content_settings/core/common",
     "//components/pref_registry:pref_registry",
@@ -88,5 +87,19 @@ static_library("browser") {
     "//third_party/re2",
     "//third_party/zlib/google:zip",
     "//url",
+  ]
+}
+
+}
+
+source_set("component_installer") {
+  sources = [
+    "ad_block_component_installer.cc",
+    "ad_block_component_installer.h",
+  ]
+  deps = [
+    "//base",
+    "//brave/components/brave_component_updater/browser",
+    "//components/component_updater:component_updater",
   ]
 }

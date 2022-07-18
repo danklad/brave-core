@@ -84,6 +84,17 @@ OBJC_EXPORT
 
 @property(readonly) BraveStats* braveStats;
 
+/// The main shields file install path (KVO compiliant)
+@property(readonly, nullable) NSString* shieldsInstallPath;
+
+/// Executed when the main shileds component is ready
+@property(nonatomic, copy, nullable) void (^shieldsComponentReady)(NSString * _Nullable installPath);
+
+    // const std::string& component_public_key,
+    // const std::string& component_id,
+    // const std::string& component_name,
+- (void)registerRegionalAdblockComponentWithPublicKey:(NSString*)publicKey id:(NSString*)id name:(NSString*)name completion:(void (^)(NSString * _Nullable installPath))completion;
+
 @end
 
 NS_ASSUME_NONNULL_END

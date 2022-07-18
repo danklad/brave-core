@@ -14,6 +14,7 @@
 #include "base/memory/ref_counted.h"
 #include "base/strings/sys_string_conversions.h"
 #include "brave/components/brave_component_updater/browser/brave_on_demand_updater.h"
+#include "brave/components/brave_shields/browser/ad_block_component_installer.h"
 #include "brave/components/brave_wallet/browser/blockchain_registry.h"
 #include "brave/components/brave_wallet/browser/ethereum_provider_impl.h"
 #include "brave/components/brave_wallet/browser/solana_provider_impl.h"
@@ -84,6 +85,7 @@ const BraveCoreSwitch BraveCoreSwitchSyncURL =
 @property(nonatomic) BravePasswordAPI* passwordAPI;
 @property(nonatomic) BraveSyncAPI* syncAPI;
 @property(nonatomic) BraveSyncProfileServiceIOS* syncProfileService;
+@property(nonatomic) NSString* shieldsInstallPath;
 @end
 
 @implementation BraveCoreMain
@@ -222,6 +224,38 @@ const BraveCoreSwitch BraveCoreSwitchSyncURL =
 
   RegisterSafetyTipsComponent(cus);
   brave_wallet::RegisterWalletDataFilesComponent(cus);
+
+  __weak auto weakSelf = self;
+  brave_shields::RegisterAdBlockDefaultComponent(cus,
+    base::BindRepeating(^(const base::FilePath& install_path) {
+      const auto strongSelf = weakSelf;
+      if (!strongSelf) { return; }
+      const auto installPath = base::SysUTF8ToNSString(install_path.value());
+      [strongSelf willChangeValueForKey:@"shieldsInstallPath"];
+      strongSelf.shieldsInstallPath = installPath;
+      [strongSelf didChangeValueForKey:@"shieldsInstallPath"];
+      if (strongSelf.shieldsComponentReady) {
+        weakSelf.shieldsComponentReady(installPath);
+      }
+    }));
+}
+
+- (void)registerRegionalAdblockComponentWithPublicKey:(NSString*)publicKey
+id:(NSString*)id name:(NSString*)name completion:(void (^)(NSString * _Nullable installPath))completion {
+  component_updater::ComponentUpdateService* cus =
+      GetApplicationContext()->GetComponentUpdateService();
+  DCHECK(cus);
+
+  // void RegisterAdBlockRegionalComponent(
+  //   component_updater::ComponentUpdateService* cus,
+  //   const std::string& component_public_key,
+  //   const std::string& component_id,
+  //   const std::string& component_name,
+  //   OnComponentReadyCallback callback);
+  brave_shields::RegisterAdBlockRegionalComponent(cus, base::SysNSStringToUTF8(publicKey), base::SysNSStringToUTF8(id), base::SysNSStringToUTF8(name), base::BindRepeating(^(const base::FilePath& install_path) {
+    const auto installPath = base::SysUTF8ToNSString(install_path.value());
+    completion(installPath);
+  }));
 }
 
 - (void)dealloc {
