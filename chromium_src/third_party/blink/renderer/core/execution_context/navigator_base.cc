@@ -19,13 +19,13 @@ namespace blink {
 namespace probe {
 
 void ApplyBraveHardwareConcurrencyOverride(blink::ExecutionContext* context,
-                                           unsigned int& hardware_concurrency) {
+                                           unsigned int* hardware_concurrency) {
   const unsigned kFakeMinProcessors = 2;
   const unsigned kFakeMaxProcessors = 8;
   unsigned true_value =
       static_cast<unsigned>(base::SysInfo::NumberOfProcessors());
   if (true_value <= 2) {
-    hardware_concurrency = true_value;
+    *hardware_concurrency = true_value;
     return;
   }
   unsigned farbled_value = true_value;
@@ -49,16 +49,16 @@ void ApplyBraveHardwareConcurrencyOverride(blink::ExecutionContext* context,
     default:
       NOTREACHED();
   }
-  hardware_concurrency = farbled_value;
+  *hardware_concurrency = farbled_value;
 }
 
 }  // namespace probe
 }  // namespace blink
 
 #define userAgent userAgent_ChromiumImpl
-#define ApplyHardwareConcurrencyOverride                       \
-  ApplyBraveHardwareConcurrencyOverride(GetExecutionContext(), \
-                                        hardware_concurrency); \
+#define ApplyHardwareConcurrencyOverride                        \
+  ApplyBraveHardwareConcurrencyOverride(GetExecutionContext(),  \
+                                        &hardware_concurrency); \
   probe::ApplyHardwareConcurrencyOverride
 
 #include "src/third_party/blink/renderer/core/execution_context/navigator_base.cc"
