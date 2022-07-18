@@ -22,6 +22,13 @@
 
 namespace privacy_sandbox {
 
+namespace {
+
+// Deprecated 07/2022
+const char kPrivacySandboxFlocEnabled[] = "privacy_sandbox.floc_enabled";
+
+}  // namespace
+
 class MockPrivacySandboxDelegate : public PrivacySandboxSettings::Delegate {
  public:
   void SetupDefaultResponse() {
@@ -516,7 +523,7 @@ TEST_F(PrivacySandboxSettingsTest, IsTopicsAllowed) {
       /*managed_cookie_exceptions=*/{});
 
   // FLoC should be disabled since the privacy sandbox APIs can't be enabled.
-  prefs()->SetBoolean(prefs::kPrivacySandboxFlocEnabled, true);
+  prefs()->SetBoolean(kPrivacySandboxFlocEnabled, true);
   EXPECT_FALSE(privacy_sandbox_settings()->IsTopicsAllowed());
 
   // Check that even bypassing PrivacySandboxSettings::SetFlocPrefEnabled,
@@ -525,8 +532,8 @@ TEST_F(PrivacySandboxSettingsTest, IsTopicsAllowed) {
       prefs::kPrivacySandboxApisEnabled, true);
   profile()->GetTestingPrefService()->SetBoolean(
       prefs::kPrivacySandboxApisEnabledV2, true);
-  profile()->GetTestingPrefService()->SetBoolean(
-      prefs::kPrivacySandboxFlocEnabled, true);
+  profile()->GetTestingPrefService()->SetBoolean(kPrivacySandboxFlocEnabled,
+                                                 true);
   EXPECT_FALSE(privacy_sandbox_settings()->IsTopicsAllowed());
 
   privacy_sandbox_test_util::SetupTestState(
@@ -537,7 +544,7 @@ TEST_F(PrivacySandboxSettingsTest, IsTopicsAllowed) {
       /*user_cookie_exceptions=*/{},
       /*managed_cookie_setting=*/privacy_sandbox_test_util::kNoSetting,
       /*managed_cookie_exceptions=*/{});
-  prefs()->SetBoolean(prefs::kPrivacySandboxFlocEnabled, true);
+  prefs()->SetBoolean(kPrivacySandboxFlocEnabled, true);
   EXPECT_FALSE(privacy_sandbox_settings()->IsTopicsAllowed());
 
   privacy_sandbox_test_util::SetupTestState(
@@ -548,7 +555,7 @@ TEST_F(PrivacySandboxSettingsTest, IsTopicsAllowed) {
       /*user_cookie_exceptions=*/{},
       /*managed_cookie_setting=*/privacy_sandbox_test_util::kNoSetting,
       /*managed_cookie_exceptions=*/{});
-  prefs()->SetBoolean(prefs::kPrivacySandboxFlocEnabled, true);
+  prefs()->SetBoolean(kPrivacySandboxFlocEnabled, true);
   EXPECT_FALSE(privacy_sandbox_settings()->IsTopicsAllowed());
 
   privacy_sandbox_test_util::SetupTestState(
@@ -559,7 +566,7 @@ TEST_F(PrivacySandboxSettingsTest, IsTopicsAllowed) {
       /*user_cookie_exceptions=*/{},
       /*managed_cookie_setting=*/privacy_sandbox_test_util::kNoSetting,
       /*managed_cookie_exceptions=*/{});
-  prefs()->SetBoolean(prefs::kPrivacySandboxFlocEnabled, true);
+  prefs()->SetBoolean(kPrivacySandboxFlocEnabled, true);
   EXPECT_FALSE(privacy_sandbox_settings()->IsTopicsAllowed());
 }
 class PrivacySandboxSettingsTestCookiesClearOnExitTurnedOff
