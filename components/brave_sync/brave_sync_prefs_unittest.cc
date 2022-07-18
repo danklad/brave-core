@@ -111,4 +111,16 @@ TEST_F(BraveSyncPrefsDeathTest, MAYBE_GetSeedOutNullptrCHECK) {
   EXPECT_CHECK_DEATH(brave_sync_prefs()->GetSeed(nullptr));
 }
 
+#if BUILDFLAG(IS_APPLE)
+TEST_F(BraveSyncPrefsTest, IsOsKeychainUnlocked) {
+  OSCryptMocker::SetUp();
+
+  EXPECT_TRUE(Prefs::IsOsKeychainUnlocked());
+  OSCryptMocker::SetBackendLocked(true);
+  EXPECT_FALSE(Prefs::IsOsKeychainUnlocked());
+
+  OSCryptMocker::TearDown();
+}
+#endif  // BUILDFLAG(IS_APPLE)
+
 }  // namespace brave_sync

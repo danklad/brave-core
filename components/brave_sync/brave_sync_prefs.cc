@@ -176,6 +176,10 @@ void Prefs::SetDismissSyncMigrateNotice(bool is_dismissed) {
   pref_service_->SetBoolean(kSyncV2MigrateNoticeDismissed, is_dismissed);
 }
 
+bool Prefs::IsOsKeychainUnlocked() {
+  return OSCrypt::IsEncryptionAvailable();
+}
+
 void Prefs::Clear() {
   pref_service_->ClearPref(kSyncV2Seed);
 }

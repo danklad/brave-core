@@ -53,6 +53,8 @@ class Prefs {
   bool IsSyncMigrateNoticeDismissed() const;
   void SetDismissSyncMigrateNotice(bool is_dismissed);
 
+  static bool IsOsKeychainUnlocked();
+
   void Clear();
 
  private:
