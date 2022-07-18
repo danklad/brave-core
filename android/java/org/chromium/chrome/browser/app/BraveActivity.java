@@ -86,6 +86,7 @@ import org.chromium.chrome.browser.CrossPromotionalModalDialogFragment;
 import org.chromium.chrome.browser.DormantUsersEngagementDialogFragment;
 import org.chromium.chrome.browser.InternetConnection;
 import org.chromium.chrome.browser.LaunchIntentDispatcher;
+import org.chromium.chrome.browser.app.domain.CryptoModel;
 import org.chromium.chrome.browser.app.domain.WalletModel;
 import org.chromium.chrome.browser.brave_news.models.FeedItemsCard;
 import org.chromium.chrome.browser.brave_stats.BraveStatsUtil;
@@ -359,6 +360,13 @@ public abstract class BraveActivity<C extends ChromeActivityComponent> extends C
 
     public WalletModel getWalletModel() {
         return walletModel;
+    }
+
+    public CryptoModel getCryptoModel() {
+        if (getWalletModel() != null) {
+            return walletModel.getCryptoModel();
+        }
+        return null;
     }
 
     private void maybeHasPendingUnlockRequest() {

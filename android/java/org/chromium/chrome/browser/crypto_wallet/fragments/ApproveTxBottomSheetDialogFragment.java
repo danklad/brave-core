@@ -38,10 +38,12 @@ import org.chromium.brave_wallet.mojom.BraveWalletService;
 import org.chromium.brave_wallet.mojom.CoinType;
 import org.chromium.brave_wallet.mojom.JsonRpcService;
 import org.chromium.brave_wallet.mojom.NetworkInfo;
+import org.chromium.brave_wallet.mojom.SolanaTxManagerProxy;
 import org.chromium.brave_wallet.mojom.TransactionInfo;
 import org.chromium.brave_wallet.mojom.TransactionType;
 import org.chromium.brave_wallet.mojom.TxService;
 import org.chromium.chrome.R;
+import org.chromium.chrome.browser.app.BraveActivity;
 import org.chromium.chrome.browser.crypto_wallet.activities.BraveWalletBaseActivity;
 import org.chromium.chrome.browser.crypto_wallet.adapters.ApproveTxFragmentPageAdapter;
 import org.chromium.chrome.browser.crypto_wallet.listeners.TransactionConfirmationListener;
@@ -73,6 +75,7 @@ public class ApproveTxBottomSheetDialogFragment extends BottomSheetDialogFragmen
     private int mChainDecimals;
     private TransactionConfirmationListener mTransactionConfirmationListener;
     private List<TransactionInfo> mTransactionInfos;
+    private SolanaTxManagerProxy mSolanaTxManagerProxy;
     private Button mRejectAllTx;
 
     public static ApproveTxBottomSheetDialogFragment newInstance(
@@ -153,6 +156,22 @@ public class ApproveTxBottomSheetDialogFragment extends BottomSheetDialogFragmen
         return null;
     }
 
+    private boolean isSolanaAccount() {
+        BraveActivity activity = BraveActivity.getBraveActivity();
+        if (activity != null && activity.getCryptoModel() != null) {
+            return activity.getCryptoModel().mCoinTypeMutableLiveData.getValue() == CoinType.SOL;
+        }
+        return false;
+    }
+
+    private SolanaTxManagerProxy getSolanaTxManagerProxy() {
+        BraveActivity activity = BraveActivity.getBraveActivity();
+        if (activity != null && activity.getWalletModel() != null) {
+            return activity.getWalletModel().getSolanaTxManagerProxy();
+        }
+        return null;
+    }
+
     @Override
     public void show(FragmentManager manager, String tag) {
         try {
@@ -202,7 +221,7 @@ public class ApproveTxBottomSheetDialogFragment extends BottomSheetDialogFragmen
                 TextView networkName = view.findViewById(R.id.network_name);
                 networkName.setText(
                         Utils.getNetworkText(getActivity(), chainId, customNetworks).toString());
-                String chainSymbol = "ETH";
+                String chainSymbol = TransactionUtils.isSolTransaction(mTxInfo) ? "SOL" : "ETH";
                 int chainDecimals = 18;
                 for (NetworkInfo chain : chains) {
                     if (chainId.equals(chain.chainId)) {
@@ -276,6 +295,27 @@ public class ApproveTxBottomSheetDialogFragment extends BottomSheetDialogFragmen
                                 }
                             });
                 } else if (TransactionUtils.isSolTransaction(mTxInfo)) {
+                    BlockchainRegistry blockchainRegistry = getBlockchainRegistry();
+                    assert blockchainRegistry != null;
+                    TokenUtils.getAllTokensFiltered(getBraveWalletService(), blockchainRegistry,
+                            chainId, TokenUtils.TokenType.SOL, tokens -> {
+                                boolean foundToken = false;
+                                for (BlockchainToken token : tokens) {
+                                    if (token.contractAddress.toLowerCase(Locale.getDefault())
+                                                    .equals(mTxInfo.txDataUnion.getEthTxData1559()
+                                                                    .baseData.to.toLowerCase(
+                                                                            Locale.getDefault()))) {
+                                        fillAssetDependentControls(
+                                                token.symbol, view, token.decimals);
+                                        foundToken = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!foundToken) {
+                                    fillAssetDependentControls(mChainSymbol, view, mChainDecimals);
+                                }
+                            });
                 } else {
                     if (mTxInfo.txDataUnion.getEthTxData1559()
                                     .baseData.to.toLowerCase(Locale.getDefault())
@@ -436,7 +476,16 @@ public class ApproveTxBottomSheetDialogFragment extends BottomSheetDialogFragmen
 
     private void approveTransaction() {
         TxService txService = getTxService();
-        if (txService == null) {
+        if (txService == null || getSolanaTxManagerProxy() == null) {
+            return;
+        }
+        if (TransactionUtils.isSolTransaction(mTxInfo)) {
+            if (TransactionUtils.isSolanaDappTransaction(mTxInfo)) {
+                // getSolanaTxManagerProxy().makeSystemProgramTransferTxData()
+            } else {
+                // getSolanaTxManagerProxy().makeTokenProgramTransferTxData()
+            }
+
             return;
         }
         txService.approveTransaction(TransactionUtils.getCoinType(mTxInfo), mTxInfo.id,

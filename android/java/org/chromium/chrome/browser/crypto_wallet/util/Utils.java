@@ -1106,6 +1106,18 @@ public class Utils {
         return eth;
     }
 
+    public static BlockchainToken createSolanaBlockchainToken(String chainId) {
+        BlockchainToken eth = new BlockchainToken();
+        eth.name = "Ethereum";
+        eth.symbol = "ETH";
+        eth.contractAddress = "";
+        eth.logo = "sol.png";
+        eth.decimals = 18;
+        eth.chainId = chainId;
+        eth.coin = CoinType.SOL;
+        return eth;
+    }
+
     public static BlockchainToken makeNetworkAsset(NetworkInfo network) {
         String logo;
 

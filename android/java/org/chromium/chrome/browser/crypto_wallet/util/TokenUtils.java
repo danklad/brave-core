@@ -21,7 +21,8 @@ import java.util.List;
 
 public class TokenUtils {
     // For  convenience, ERC20 also means ETH
-    public enum TokenType { ERC20, ERC721, ALL }
+    // SOL for Solana
+    public enum TokenType { ERC20, ERC721, SOL, ALL }
     ;
 
     private static BlockchainToken[] filterTokens(
@@ -35,6 +36,9 @@ public class TokenUtils {
                     break;
                 case ERC721:
                     typeFilter = !t.isErc721;
+                    break;
+                case SOL:
+                    typeFilter = false;
                     break;
                 case ALL:
                     typeFilter = false;
@@ -59,10 +63,12 @@ public class TokenUtils {
     public static void getAllTokensFiltered(BraveWalletService braveWalletService,
             BlockchainRegistry blockchainRegistry, String chainId, TokenType tokenType,
             BlockchainRegistry.GetAllTokens_Response callback) {
-        blockchainRegistry.getAllTokens(
-                BraveWalletConstants.MAINNET_CHAIN_ID, CoinType.ETH, (BlockchainToken[] tokens) -> {
-                    braveWalletService.getUserAssets(
-                            chainId, CoinType.ETH, (BlockchainToken[] userTokens) -> {
+        blockchainRegistry.getAllTokens(BraveWalletConstants.MAINNET_CHAIN_ID,
+                tokenType == TokenType.SOL ? CoinType.SOL : CoinType.ETH,
+                (BlockchainToken[] tokens) -> {
+                    braveWalletService.getUserAssets(chainId,
+                            tokenType == TokenType.SOL ? CoinType.SOL : CoinType.ETH,
+                            (BlockchainToken[] userTokens) -> {
                                 BlockchainToken[] filteredTokens = filterTokens(
                                         concatenateTwoArrays(tokens, userTokens), tokenType, false);
                                 callback.call(filteredTokens);
