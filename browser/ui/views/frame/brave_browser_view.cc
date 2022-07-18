@@ -10,6 +10,8 @@
 #include "base/bind.h"
 #include "brave/browser/brave_rewards/rewards_panel/rewards_panel_coordinator.h"
 #include "brave/browser/brave_rewards/rewards_service_factory.h"
+#include "brave/browser/new_tab/brave_new_tab_service.h"
+#include "brave/browser/new_tab/brave_new_tab_service_factory.h"
 #include "brave/browser/sparkle_buildflags.h"
 #include "brave/browser/ui/brave_browser.h"
 #include "brave/browser/ui/views/brave_actions/brave_actions_container.h"
@@ -61,6 +63,10 @@
 #if BUILDFLAG(ENABLE_BRAVE_TRANSLATE_EXTENSION) || \
     BUILDFLAG(ENABLE_BRAVE_TRANSLATE_GO)
 #include "brave/browser/translate/brave_translate_utils.h"
+#endif
+
+#if BUILDFLAG(ENABLE_INSTANT_NEW_TAB)
+#include "chrome/browser/ui/browser_list.h"
 #endif
 
 namespace {
@@ -416,6 +422,17 @@ void BraveBrowserView::OnWindowClosingConfirmResponse(bool allowed_to_close) {
   }
 }
 
+#if BUILDFLAG(ENABLE_INSTANT_NEW_TAB)
+void BraveBrowserView::Close() {
+  auto* browser = GetBraveBrowser();
+  if (BrowserList::GetInstance()->size() < 2) {
+    BraveNewTabServiceFactory::GetInstance()
+        ->GetServiceForContext(browser->profile())
+        ->Reset();
+  }
+  BrowserView::Close();
+}
+#endif
 void BraveBrowserView::ConfirmBrowserCloseWithPendingDownloads(
     int download_count,
     Browser::DownloadCloseType dialog_type,
