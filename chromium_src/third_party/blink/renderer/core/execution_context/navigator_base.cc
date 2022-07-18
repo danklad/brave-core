@@ -18,11 +18,10 @@
 namespace blink {
 namespace probe {
 
-const unsigned kFakeMinProcessors = 2;
-const unsigned kFakeMaxProcessors = 8;
-
 void ApplyBraveHardwareConcurrencyOverride(blink::ExecutionContext* context,
                                            unsigned int& hardware_concurrency) {
+  const unsigned kFakeMinProcessors = 2;
+  const unsigned kFakeMaxProcessors = 8;
   unsigned true_value =
       static_cast<unsigned>(base::SysInfo::NumberOfProcessors());
   if (true_value <= 2) {
