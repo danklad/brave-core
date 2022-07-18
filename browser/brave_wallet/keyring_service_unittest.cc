@@ -2372,16 +2372,10 @@ TEST_F(KeyringServiceUnitTest, NotifyUserInteraction) {
 TEST_F(KeyringServiceUnitTest, SelectAddedAccount) {
   KeyringService service(json_rpc_service(), GetPrefs());
   ASSERT_TRUE(CreateWallet(&service, "brave"));
-  base::RunLoop().RunUntilIdle();
-  ASSERT_FALSE(service.IsLocked());
 
   AddAccount(&service, "eth acc 1", mojom::CoinType::ETH);
   AddAccount(&service, "eth acc 2", mojom::CoinType::ETH);
   AddAccount(&service, "eth acc 3", mojom::CoinType::ETH);
-
-  AddFilecoinAccount(&service, "fil acc 1", mojom::kFilecoinMainnet);
-  AddFilecoinAccount(&service, "fil acc 2", mojom::kFilecoinMainnet);
-  AddFilecoinAccount(&service, "fil acc 3", mojom::kFilecoinMainnet);
 
   AddAccount(&service, "sol acc 1", mojom::CoinType::SOL);
   AddAccount(&service, "sol acc 2", mojom::CoinType::SOL);
@@ -2395,17 +2389,6 @@ TEST_F(KeyringServiceUnitTest, SelectAddedAccount) {
       }));
 
   service.GetKeyringInfo(
-      mojom::kFilecoinKeyringId,
-      base::BindLambdaForTesting([&](mojom::KeyringInfoPtr keyring_info) {
-#if !BUILDFLAG(IS_ANDROID)
-        ASSERT_EQ(GetFilecoinSelectedAccount(&service, mojom::kFilecoinMainnet),
-                  keyring_info->account_infos[2]->address);
-#else
-        ASSERT_FALSE(keyring_info->is_keyring_created);
-#endif  // !BUILDFLAG(IS_ANDROID)
-      }));
-
-  service.GetKeyringInfo(
       mojom::kSolanaKeyringId,
       base::BindLambdaForTesting([&](mojom::KeyringInfoPtr keyring_info) {
         ASSERT_EQ(GetSelectedAccount(&service, mojom::CoinType::SOL),
@@ -2416,8 +2399,6 @@ TEST_F(KeyringServiceUnitTest, SelectAddedAccount) {
 TEST_F(KeyringServiceUnitTest, SelectAddedFilecoinAccount) {
   KeyringService service(json_rpc_service(), GetPrefs());
   ASSERT_TRUE(CreateWallet(&service, "brave"));
-  base::RunLoop().RunUntilIdle();
-  ASSERT_FALSE(service.IsLocked());
 
 #if !BUILDFLAG(IS_ANDROID)
   AddFilecoinAccount(&service, "fil acc 1", mojom::kFilecoinMainnet);
@@ -2452,7 +2433,6 @@ TEST_F(KeyringServiceUnitTest, SelectAddedFilecoinAccount) {
 TEST_F(KeyringServiceUnitTest, SelectImportedFilecoinAccount) {
   KeyringService service(json_rpc_service(), GetPrefs());
   ASSERT_TRUE(CreateWallet(&service, "brave"));
-  base::RunLoop().RunUntilIdle();
   ASSERT_FALSE(service.IsLocked());
 
 #if !BUILDFLAG(IS_ANDROID)
@@ -2513,8 +2493,6 @@ TEST_F(KeyringServiceUnitTest, SelectImportedFilecoinAccount) {
 TEST_F(KeyringServiceUnitTest, SelectImportedAccount) {
   KeyringService service(json_rpc_service(), GetPrefs());
   ASSERT_TRUE(CreateWallet(&service, "brave"));
-  base::RunLoop().RunUntilIdle();
-  ASSERT_FALSE(service.IsLocked());
 
   ImportAccount(
       &service, "Best Evil Son",
@@ -2537,7 +2515,6 @@ TEST_F(KeyringServiceUnitTest, SelectImportedAccount) {
 TEST_F(KeyringServiceUnitTest, SelectHardwareAccount) {
   KeyringService service(json_rpc_service(), GetPrefs());
   ASSERT_TRUE(CreateWallet(&service, "brave"));
-  base::RunLoop().RunUntilIdle();
   ASSERT_FALSE(service.IsLocked());
 
   std::vector<mojom::HardwareWalletAccountPtr> new_accounts;
